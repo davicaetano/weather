@@ -1,6 +1,5 @@
 package com.davicaetano.weather.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -99,10 +98,7 @@ fun WindItem(
                         style = MaterialTheme.typography.displaySmall,
                     )
                 }
-
             }
-
         }
     }
-
 }
