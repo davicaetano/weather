@@ -4,9 +4,8 @@ import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
 
-data class Coord (
+data class CloudsNM (
 
-  @SerializedName("lat" ) var lat : BigDecimal? = null,
-  @SerializedName("lon" ) var lon : BigDecimal? = null
+    @SerializedName("all" ) var all : BigDecimal
 
 )
