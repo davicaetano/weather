@@ -26,12 +26,12 @@ import androidx.compose.ui.unit.dp
 import com.davicaetano.weather.R
 import com.davicaetano.weather.features.getRotateAngle
 import com.davicaetano.weather.features.getSpeedText
-import com.davicaetano.weather.features.weather.WindVS
+import com.davicaetano.weather.features.weather.WeatherItemViewState
 import com.davicaetano.weather.model.UnitSystem
 
 @Composable
 fun WindItem(
-    wind: WindVS,
+    item: WeatherItemViewState,
     unitSystem: UnitSystem,
     modifier: Modifier = Modifier
 ) {
@@ -71,7 +71,7 @@ fun WindItem(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Icon(
-                    modifier = Modifier.rotate(wind.getRotateAngle()),
+                    modifier = Modifier.rotate(item.getRotateAngle()),
                     painter = painterResource(R.drawable.near_me_72dp),
                     contentDescription = null,
                 )
@@ -94,7 +94,7 @@ fun WindItem(
 
                 ) {
                     Text(
-                        text = wind.getSpeedText(LocalContext.current, unitSystem),
+                        text = item.getSpeedText(LocalContext.current, unitSystem),
                         style = MaterialTheme.typography.displaySmall,
                     )
                 }

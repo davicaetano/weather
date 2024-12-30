@@ -3,7 +3,7 @@ package com.davicaetano.weather.model
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-data class Forecast constructor(
+data class Forecast(
     val temp: BigDecimal,
     val date: LocalDateTime,
     val description: String,
@@ -15,7 +15,6 @@ data class Forecast constructor(
     val humidity: BigDecimal,
     val visibility: BigDecimal,
     val clouds: BigDecimal,
-    val wind: Wind,
     val location: String,
     val sunrise: LocalDateTime,
     val sunset: LocalDateTime,

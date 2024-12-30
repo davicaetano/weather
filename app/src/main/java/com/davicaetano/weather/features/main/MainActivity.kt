@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults, deviceId)
         if (requestCode == 0) {
-            if (isLocationPermissionGranted()) {
+            if (grantResults.contains(PackageManager. PERMISSION_GRANTED)) {
                 fusedLocationClient.lastLocation.addOnSuccessListener {
                     locationRepository.setLocation(Coord(it.latitude, it.longitude))
                 }

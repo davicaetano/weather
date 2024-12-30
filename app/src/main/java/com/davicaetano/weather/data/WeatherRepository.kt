@@ -1,5 +1,6 @@
 package com.davicaetano.weather.data
 
+import com.davicaetano.weather.data.cache.WeatherCache
 import com.davicaetano.weather.data.network.service.NetworkServiceSettings
 import com.davicaetano.weather.data.network.service.WeatherApiService
 import com.davicaetano.weather.data.network.service.getString
@@ -8,12 +9,16 @@ import com.davicaetano.weather.model.Forecast
 import com.davicaetano.weather.model.Location
 import com.davicaetano.weather.model.UnitSystem
 import com.davicaetano.weather.model.Weather
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(
     networkServiceSettings: NetworkServiceSettings,
+    private val weatherCache: WeatherCache
 ) {
 
     private val weatherApiService: WeatherApiService = networkServiceSettings.feedNetworkService
@@ -31,7 +36,12 @@ class WeatherRepository @Inject constructor(
         coord: Coord,
         unitSystem: UnitSystem,
     ) {
-        _weatherState.value = LoadingWeatherState()
+        val cache: Weather? = weatherCache.getWeather()
+            .map { it.filter { it.lat == coord.lat && it.lon == coord.lon } }
+            .map { it.firstOrNull() }.first()
+
+        _weatherState.value = LoadingWeatherState(cache)
+        delay(3000)
         try {
             val result = weatherApiService.getWeatherData(
                 lat = coord.lat,
@@ -39,12 +49,17 @@ class WeatherRepository @Inject constructor(
                 unit = unitSystem.getString()
             )
             if (result.isSuccessful) {
-                _weatherState.value = SuccessWeatherState(result.body()!!.toWeather(unitSystem))
+                val weather = result.body()!!
+                    .toWeather(lat = coord.lat, lon = coord.lon, unitSystem = unitSystem)
+                weatherCache.saveWeather(weather)
+                _weatherState.value = SuccessWeatherState(weather)
             } else {
-                _weatherState.value = ErrorWeatherState(Throwable(result.errorBody().toString()))
+                _weatherState.value = ErrorWeatherState(
+                    cache,
+                    Throwable(result.errorBody().toString()))
             }
         } catch (error: Throwable) {
-            _weatherState.value = ErrorWeatherState(error)
+            _weatherState.value = ErrorWeatherState(cache, error)
         }
     }
 
@@ -60,7 +75,8 @@ class WeatherRepository @Inject constructor(
                 unit = unitSystem.getString()
             )
             if (result.isSuccessful) {
-                _forecastState.value = SuccessForecastState(result.body()!!.toForecastList(unitSystem))
+                _forecastState.value =
+                    SuccessForecastState(result.body()!!.toForecastList(unitSystem))
             } else {
                 _forecastState.value = ErrorForecastState(Throwable(result.errorBody().toString()))
             }
@@ -81,7 +97,8 @@ class WeatherRepository @Inject constructor(
                     locationList = result.body()!!.map { it.toLocation() }
                 )
             } else {
-                _searchState.value = ErrorSearchState(error = Throwable(result.errorBody().toString()))
+                _searchState.value =
+                    ErrorSearchState(error = Throwable(result.errorBody().toString()))
             }
         } catch (error: Throwable) {
             _searchState.value = ErrorSearchState(error = error)
@@ -97,11 +114,11 @@ class WeatherRepository @Inject constructor(
     }
 }
 
-sealed class WeatherState()
-class InitialWeatherState() : WeatherState()
-class LoadingWeatherState() : WeatherState()
-class SuccessWeatherState(val weather: Weather) : WeatherState()
-class ErrorWeatherState(val error: Throwable) : WeatherState()
+sealed class WeatherState(open val weather: Weather?)
+class InitialWeatherState() : WeatherState(null)
+class LoadingWeatherState(override val weather: Weather?) : WeatherState(weather)
+class SuccessWeatherState(override val weather: Weather) : WeatherState(weather)
+class ErrorWeatherState(override val weather: Weather?, val error: Throwable) : WeatherState(weather)
 
 sealed class ForecastState()
 class InitialForecastState() : ForecastState()
@@ -113,6 +130,8 @@ class ErrorForecastState(val error: Throwable) : ForecastState()
 sealed class SearchState(open val searchField: String = "")
 class InitialSearchState(override val searchField: String = "") : SearchState()
 class LoadingSearchState(override val searchField: String = "") : SearchState(searchField)
-class SuccessSearchState(override val searchField: String = "", val locationList: List<Location>): SearchState()
+class SuccessSearchState(override val searchField: String = "", val locationList: List<Location>) :
+    SearchState()
+
 class ErrorSearchState(override val searchField: String = "", val error: Throwable) : SearchState()
 

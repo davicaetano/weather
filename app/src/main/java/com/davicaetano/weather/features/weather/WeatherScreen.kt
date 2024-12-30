@@ -16,7 +16,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,7 +28,6 @@ import com.davicaetano.weather.ui.components.HeaderItem
 import com.davicaetano.weather.ui.components.SunriseAndSunsetItem
 import com.davicaetano.weather.ui.components.WindItem
 import com.davicaetano.weather.ui.theme.WeatherTheme
-import java.math.BigDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,14 +44,21 @@ fun WeatherScreen(
         .collectAsStateWithLifecycle(InitialForecastViewState).value
 
     topbar.invoke {
+        val item = weatherViewState.weatherItemViewState
         CenterAlignedTopAppBar(
-            title = { Text(text = if (weatherViewState is SuccessWeatherViewState) {
-                weatherViewState.weatherItemViewState.toolbarTitle
-            } else {
-                stringResource(R.string.app_name)
-            }) },
+            title = {
+                Text(
+                    text = if (item != null) {
+                        item.toolbarTitle
+                    } else {
+                        stringResource(R.string.app_name)
+                    }
+                )
+            },
             navigationIcon = {
-                IconButton(onClick = { onBackClick() }) {
+                IconButton(onClick = {
+                    onBackClick()
+                }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back"
@@ -65,7 +70,18 @@ fun WeatherScreen(
 
     when (weatherViewState) {
         is InitialWeatherViewState -> Text("Initial")
-        is LoadingWeatherViewState -> Text("Loading...")
+        is LoadingWeatherViewState -> {
+            if (weatherViewState.weatherItemViewState != null) {
+                WeatherScreen(
+                    item = weatherViewState.weatherItemViewState!!,
+                    forecastViewState = forecastViewState,
+                    modifier = modifier
+                )
+            } else {
+                Text("Loading...")
+            }
+        }
+
         is ErrorWeatherViewState -> Text("Error: ${weatherViewState.error}")
         is SuccessWeatherViewState -> {
             WeatherScreen(
@@ -96,7 +112,7 @@ fun WeatherScreen(
         ForecastListItem(forecastViewState)
         Spacer(modifier = Modifier.height(16.dp))
         WindItem(
-            wind = item.wind,
+            item = item,
             unitSystem = item.unitSystem
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -126,10 +142,8 @@ fun WeatherScreenPreview(
                 pressure = "333",
                 humidity = "100",
                 visibility = "54",
-                wind = WindVS(
-                    speed = "12",
-                    deg = BigDecimal("180"),
-                ),
+                windSpeed = "15",
+                windDeg = "110",
                 clouds = "93",
                 sunrise = "7:30 AM",
                 sunset = "7:30 PM",

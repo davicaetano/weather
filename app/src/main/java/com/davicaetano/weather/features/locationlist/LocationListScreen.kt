@@ -52,7 +52,7 @@ fun LocationListScreen(
     val state = rememberSaveable { mutableStateOf(0) }
 
     val locationList = viewModel.favoriteState
-        .collectAsStateWithLifecycle().value
+        .collectAsStateWithLifecycle(listOf()).value
 
 
     viewModel.locationState.onEach { location ->

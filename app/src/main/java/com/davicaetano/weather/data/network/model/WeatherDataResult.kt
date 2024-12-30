@@ -27,8 +27,14 @@ data class WeatherDataResult (
     @SerializedName("cod"        ) var cod          : Int,
 ) {
 
-    fun toWeather(unitSystem: UnitSystem): Weather {
+    fun toWeather(
+        lat: Double,
+        lon: Double,
+        unitSystem: UnitSystem
+    ): Weather {
         return Weather(
+            lat = lat,
+            lon = lon,
             temp = mainNM.temp,
             date = LocalDateTime.ofInstant(
                 Instant.ofEpochMilli(date.toLong() * 1000),
@@ -43,7 +49,9 @@ data class WeatherDataResult (
             humidity = mainNM.humidity,
             visibility = visibility,
             clouds = cloudsNM.all,
-            wind = windNM.toWind(),
+
+            windSpeed = windNM.speed,
+            windDeg = windNM.deg,
             location = name,
             sunrise = LocalDateTime.ofInstant(
                 Instant.ofEpochMilli(sysWeatherNM.sunrise.toLong() * 1000),

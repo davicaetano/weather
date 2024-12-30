@@ -7,5 +7,5 @@
     <string name="speed_metric">%1$s m/s</string>
     <string name="speed_imperial">%1$s mph</string>
     <string name="favorites">Favorites</string>
-    <string name="no_favorites">No favorites added</string>
+    <string name="no_favorites">Click bellow to add favorite locations</string>
 </resources>

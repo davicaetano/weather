@@ -7,11 +7,18 @@ import com.davicaetano.weather.ui.WeatherFormatter
 import com.davicaetano.weather.features.toWeatherImageUrl
 import com.davicaetano.weather.model.UnitSystem
 
-sealed class WeatherViewState()
-object InitialWeatherViewState: WeatherViewState()
-object LoadingWeatherViewState: WeatherViewState()
-data class SuccessWeatherViewState(val weatherItemViewState: WeatherItemViewState): WeatherViewState()
-data class ErrorWeatherViewState(val error: String): WeatherViewState()
+sealed class WeatherViewState(open val weatherItemViewState: WeatherItemViewState?)
+object InitialWeatherViewState : WeatherViewState(null)
+data class LoadingWeatherViewState(override val weatherItemViewState: WeatherItemViewState?) :
+    WeatherViewState(weatherItemViewState)
+
+data class SuccessWeatherViewState(override val weatherItemViewState: WeatherItemViewState) :
+    WeatherViewState(weatherItemViewState)
+
+data class ErrorWeatherViewState(
+    override val weatherItemViewState: WeatherItemViewState?,
+    val error: String
+) : WeatherViewState(weatherItemViewState)
 
 data class WeatherItemViewState(
     val toolbarTitle: String,
@@ -24,7 +31,8 @@ data class WeatherItemViewState(
     val pressure: String,
     val humidity: String,
     val visibility: String,
-    val wind: WindVS,
+    val windSpeed: String,
+    val windDeg: String,
     val clouds: String,
     val sunrise: String,
     val sunset: String,
@@ -38,16 +46,17 @@ fun Weather.toWeatherItemViewState(
     return WeatherItemViewState(
         toolbarTitle = this.location,
         title = this.description.capitalize(Locale.current),
-        temp = weatherFormatter.getTempWithoutDecimal(this.temp),
+        temp = weatherFormatter.getFormattedBigDecimal(this.temp),
         iconUrl = this.icon.toWeatherImageUrl(),
-        feelsLike = weatherFormatter.getTempWithoutDecimal(this.feelsLike),
-        high = weatherFormatter.getTempWithoutDecimal(this.high),
-        low = weatherFormatter.getTempWithoutDecimal(this.low),
-        pressure = weatherFormatter.getPressure(this.pressure),
-        humidity = weatherFormatter.getHumidity(this.pressure),
-        visibility = weatherFormatter.getClouds(this.clouds),
-        clouds = weatherFormatter.getClouds(this.clouds),
-        wind = this.wind.toWindVS(weatherFormatter),
+        feelsLike = weatherFormatter.getFormattedBigDecimal(this.feelsLike),
+        high = weatherFormatter.getFormattedBigDecimal(this.high),
+        low = weatherFormatter.getFormattedBigDecimal(this.low),
+        pressure = weatherFormatter.getFormattedBigDecimal(this.pressure),
+        humidity = weatherFormatter.getFormattedBigDecimal(this.pressure),
+        visibility = weatherFormatter.getFormattedBigDecimal(this.clouds),
+        clouds = weatherFormatter.getFormattedBigDecimal(this.clouds),
+        windSpeed = weatherFormatter.getFormattedBigDecimal(this.windSpeed),
+        windDeg = weatherFormatter.getFormattedBigDecimal(this.windDeg),
         sunrise = weatherFormatter.getTime(this.sunrise),
         sunset = weatherFormatter.getTime(this.sunset),
         unitSystem = this.unitSystem,

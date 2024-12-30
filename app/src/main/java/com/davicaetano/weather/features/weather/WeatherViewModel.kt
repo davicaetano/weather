@@ -17,6 +17,7 @@ import com.davicaetano.weather.model.Coord
 import com.davicaetano.weather.model.Location
 import com.davicaetano.weather.ui.WeatherFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,6 +30,8 @@ class WeatherViewModel @Inject constructor(
     private val unitRepository: UnitRepository,
 ) : ViewModel() {
 
+    var jobList: MutableList<Job> = mutableListOf()
+
     val locationState = locationRepository.locationState
     val favoriteState = locationRepository.favoriteState
 
@@ -37,8 +40,15 @@ class WeatherViewModel @Inject constructor(
     val weatherViewState = weatherRepository.weatherState.map {
         when (it) {
             is InitialWeatherState -> InitialWeatherViewState
-            is LoadingWeatherState -> LoadingWeatherViewState
-            is ErrorWeatherState -> ErrorWeatherViewState(it.error.toString())
+            is LoadingWeatherState -> LoadingWeatherViewState(
+                it.weather?.toWeatherItemViewState(weatherFormatter)
+            )
+
+            is ErrorWeatherState -> ErrorWeatherViewState(
+                it.weather?.toWeatherItemViewState(weatherFormatter),
+                it.error.toString()
+            )
+
             is SuccessWeatherState -> SuccessWeatherViewState(
                 it.weather.toWeatherItemViewState(weatherFormatter)
             )
@@ -62,7 +72,7 @@ class WeatherViewModel @Inject constructor(
                 coord = Coord(lat = location.lat, lon = location.lon),
                 unitSystem = unitRepository.getUnit()
             )
-        }
+        }.let { jobList.add(it) }
     }
 
     fun fetchForecast(location: Location) {
@@ -71,7 +81,7 @@ class WeatherViewModel @Inject constructor(
                 coord = Coord(lat = location.lat, lon = location.lon),
                 unitSystem = unitRepository.getUnit()
             )
-        }
+        }.let { jobList.add(it) }
     }
 
     fun onSearchChange(search: String) {
@@ -81,14 +91,23 @@ class WeatherViewModel @Inject constructor(
     fun onSearchClick() {
         viewModelScope.launch {
             weatherRepository.onSearchClick()
-        }
+        }.let { jobList.add(it) }
     }
 
     fun saveLocation(location: Location) {
-        locationRepository.saveFavorite(location)
+        viewModelScope.launch {
+            locationRepository.saveFavorite(location)
+        }
     }
 
     fun deleteLocation(location: Location) {
-        locationRepository.deleteFavorite(location)
+        viewModelScope.launch {
+            locationRepository.deleteFavorite(location)
+        }
+    }
+
+    fun cancelJobs() {
+        jobList.forEach { it.cancel() }
+        jobList = mutableListOf()
     }
 }

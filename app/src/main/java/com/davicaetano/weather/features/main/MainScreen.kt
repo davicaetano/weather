@@ -78,7 +78,10 @@ fun MainScreen(
                 WeatherScreen(
                     viewModel = viewModel,
                     topbar = { topbar.value = it },
-                    onBackClick = { navHostController.navigateUp() }
+                    onBackClick = {
+                        viewModel.cancelJobs()
+                        navHostController.navigateUp()
+                    }
                 )
             }
 
@@ -86,7 +89,10 @@ fun MainScreen(
                 fab.value = {}
                 SearchScreen(
                     viewModel = viewModel,
-                    onBackClick = { navHostController.navigateUp() },
+                    onBackClick = {
+                        viewModel.cancelJobs()
+                        navHostController.navigateUp()
+                    },
                     onSaveClick = { location ->
                         navHostController.navigateUp()
                         viewModel.saveLocation(location)

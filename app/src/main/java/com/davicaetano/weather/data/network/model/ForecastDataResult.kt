@@ -36,7 +36,6 @@ data class ForecastDataResult (
                 humidity = listNM.mainNM.humidity,
                 visibility = listNM.visibility ?: BigDecimal.ZERO,
                 clouds = listNM.cloudsNM.all,
-                wind = listNM.windNM.toWind(),
                 location = cityNM.name,
                 sunrise = LocalDateTime.ofInstant(
                     Instant.ofEpochMilli(cityNM.sunrise.toLong() * 1000),

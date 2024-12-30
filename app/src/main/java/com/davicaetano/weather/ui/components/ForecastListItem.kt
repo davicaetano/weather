@@ -34,9 +34,7 @@ import com.davicaetano.weather.features.weather.ForecastViewState
 import com.davicaetano.weather.features.weather.InitialForecastViewState
 import com.davicaetano.weather.features.weather.LoadingForecastViewState
 import com.davicaetano.weather.features.weather.SuccessForecastViewState
-import com.davicaetano.weather.features.weather.WindVS
 import com.davicaetano.weather.model.Imperial
-import java.math.BigDecimal
 
 @Composable
 fun ForecastListItem(
@@ -150,7 +148,6 @@ fun ForecastItemPreview(modifier: Modifier = Modifier) {
             pressure = "",
             humidity = "",
             visibility = "",
-            wind = WindVS("", BigDecimal("10")),
             clouds = "",
             sunrise = "",
             sunset = "",

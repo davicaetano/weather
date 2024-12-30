@@ -7,8 +7,8 @@ data class LocationDataResult(
     @SerializedName("name"         ) var name        : String,
     @SerializedName("lat"          ) var lat         : Double,
     @SerializedName("lon"          ) var lon         : Double,
-    @SerializedName("country"      ) var country     : String,
-    @SerializedName("state"        ) var state       : String,
+    @SerializedName("country"      ) var country     : String?,
+    @SerializedName("state"        ) var state       : String?,
 
 ) {
     fun toLocation(): Location {
@@ -16,8 +16,8 @@ data class LocationDataResult(
             name = name,
             lat = lat,
             lon = lon,
-            country = country,
-            state = state,
+            country = country ?: "",
+            state = state ?: "",
         )
     }
 }

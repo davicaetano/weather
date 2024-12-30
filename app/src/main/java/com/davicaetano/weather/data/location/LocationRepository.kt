@@ -1,5 +1,6 @@
 package com.davicaetano.weather.data.location
 
+import com.davicaetano.weather.data.cache.WeatherCache
 import com.davicaetano.weather.model.Coord
 import com.davicaetano.weather.model.Location
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,28 +10,23 @@ import javax.inject.Singleton
 
 @Singleton
 class LocationRepository @Inject constructor(
-
+    private val weatherCache: WeatherCache
 ) {
 
     private val _locationState = MutableStateFlow<Coord?>(null)
     val locationState = _locationState.asStateFlow()
 
-    private val _favoriteState = MutableStateFlow<List<Location>>(listOf())
-    val favoriteState = _favoriteState.asStateFlow()
+    val favoriteState = weatherCache.getLocations()
 
     fun setLocation(coord: Coord) {
         _locationState.value = coord
     }
 
-    fun getNyLocation(): Coord {
-        return Coord(40.769228, -73.976420) // NY
+    suspend fun saveFavorite(location: Location) {
+        weatherCache.saveLocation(location)
     }
 
-    fun saveFavorite(location: Location) {
-        _favoriteState.value = _favoriteState.value + location
-    }
-
-    fun deleteFavorite(location: Location) {
-        _favoriteState.value = _favoriteState.value - location
+    suspend fun deleteFavorite(location: Location) {
+        weatherCache.deleteLocation(location)
     }
 }
