@@ -32,6 +32,6 @@ interface WeatherApiService {
         @Query("q") q: String,
         @Query("limit") limit: Int = 10,
         @Query("appid") apiKey: String = API_KEY,
-    ): Response<LocationDataResult>
+    ): Response<List<LocationDataResult>>
 
 }

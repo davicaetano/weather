@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Weather</string>
+    <string name="search">Search</string>
     <string name="feels_like">Feels like %1$s°</string>
     <string name="high_and_low">High %1$s° - Low %2$s°</string>
 

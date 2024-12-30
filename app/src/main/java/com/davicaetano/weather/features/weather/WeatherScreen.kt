@@ -63,13 +63,6 @@ fun WeatherScreen(
         )
     }
 
-    LaunchedEffect(viewModel) {
-        viewModel.fetchWeather()
-    }
-    LaunchedEffect(viewModel) {
-        viewModel.fetchForecast()
-    }
-
     when (weatherViewState) {
         is InitialWeatherViewState -> Text("Initial")
         is LoadingWeatherViewState -> Text("Loading...")

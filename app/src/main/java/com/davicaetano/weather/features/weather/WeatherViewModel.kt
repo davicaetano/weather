@@ -13,6 +13,8 @@ import com.davicaetano.weather.data.SuccessWeatherState
 import com.davicaetano.weather.data.WeatherRepository
 import com.davicaetano.weather.data.location.LocationRepository
 import com.davicaetano.weather.data.unit.UnitRepository
+import com.davicaetano.weather.model.Coord
+import com.davicaetano.weather.model.Location
 import com.davicaetano.weather.ui.WeatherFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
@@ -28,6 +30,9 @@ class WeatherViewModel @Inject constructor(
 ) : ViewModel() {
 
     val locationState = locationRepository.locationState
+    val favoriteState = locationRepository.favoriteState
+
+    val searchState = weatherRepository.searchState
 
     val weatherViewState = weatherRepository.weatherState.map {
         when (it) {
@@ -51,21 +56,39 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
-    fun fetchWeather() {
+    fun fetchWeather(location: Location) {
         viewModelScope.launch {
             weatherRepository.fetchWeather(
-                coord = locationRepository.getNyLocation(),
+                coord = Coord(lat = location.lat, lon = location.lon),
                 unitSystem = unitRepository.getUnit()
             )
         }
     }
 
-    fun fetchForecast() {
+    fun fetchForecast(location: Location) {
         viewModelScope.launch {
             weatherRepository.fetchForecast(
-                coord = locationRepository.getNyLocation(),
+                coord = Coord(lat = location.lat, lon = location.lon),
                 unitSystem = unitRepository.getUnit()
             )
         }
+    }
+
+    fun onSearchChange(search: String) {
+        weatherRepository.onSearchChange(search)
+    }
+
+    fun onSearchClick() {
+        viewModelScope.launch {
+            weatherRepository.onSearchClick()
+        }
+    }
+
+    fun saveLocation(location: Location) {
+        locationRepository.saveFavorite(location)
+    }
+
+    fun deleteLocation(location: Location) {
+        locationRepository.deleteFavorite(location)
     }
 }

@@ -10,7 +10,7 @@ data class ListNM (
     @SerializedName("weather"    ) var weatherNM    : ArrayList<WeatherNM> = arrayListOf(),
     @SerializedName("clouds"     ) var cloudsNM     : CloudsNM,
     @SerializedName("wind"       ) var windNM       : WindNM,
-    @SerializedName("visibility" ) var visibility   : BigDecimal,
+    @SerializedName("visibility" ) var visibility   : BigDecimal? = BigDecimal.ZERO,
     @SerializedName("pop"        ) var pop          : BigDecimal,
     @SerializedName("rain"       ) var rainNM       : RainNM? = null,
     @SerializedName("snow"       ) var snowNM       : SnowNM? = null,

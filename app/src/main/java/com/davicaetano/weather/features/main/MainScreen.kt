@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.davicaetano.weather.features.locationlist.LocationListScreen
+import com.davicaetano.weather.features.search.SearchScreen
 import com.davicaetano.weather.features.weather.WeatherScreen
 import com.davicaetano.weather.features.weather.WeatherViewModel
 import kotlinx.serialization.Serializable
@@ -27,8 +28,6 @@ fun MainScreen(
 
     val viewModel: WeatherViewModel = hiltViewModel()
     val topbar = remember { mutableStateOf<@Composable () -> Unit>({}) }
-
-
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -46,9 +45,25 @@ fun MainScreen(
                     onCurrentLocationClick = {
                         onRequestLocationClick()
                     },
-                    onLocationReturned = {
-                        viewModel.fetchWeather()
-                        navHostController.navigate(WeatherScreenRoute(10)){
+                    onFavoriteLocationClick = { location ->
+                        viewModel.fetchWeather(location)
+                        viewModel.fetchForecast(location)
+                        navHostController.navigate(WeatherScreenRoute(10)) {
+                            launchSingleTop = true
+                        }
+                    },
+                    onSearchClick = {
+                        navHostController.navigate(SearchScreenRoute) {
+                            launchSingleTop = true
+                        }
+                    },
+                    onDeleteLocation = { location ->
+                        viewModel.deleteLocation(location)
+                    },
+                    onLocationReturned = { location ->
+                        viewModel.fetchWeather(location)
+                        viewModel.fetchForecast(location)
+                        navHostController.navigate(WeatherScreenRoute(10)) {
                             launchSingleTop = true
                         }
                     }
@@ -56,12 +71,24 @@ fun MainScreen(
             }
 
             composable<WeatherScreenRoute>() {
-//                val weatherScreenRoute: WeatherScreenRoute = it.toRoute()
 
                 WeatherScreen(
                     viewModel = viewModel,
                     topbar = { topbar.value = it },
                     onBackClick = { navHostController.navigateUp() }
+                )
+            }
+
+            composable<SearchScreenRoute>() {
+
+                SearchScreen(
+                    viewModel = viewModel,
+                    onBackClick = { navHostController.navigateUp() },
+                    onSaveClick = { location ->
+                        navHostController.navigateUp()
+                        viewModel.saveLocation(location)
+                    },
+                    topbar = { topbar.value = it }
                 )
             }
         }
@@ -75,3 +102,7 @@ data object LocationListRoute : Route()
 
 @Serializable
 data class WeatherScreenRoute(val id: Int) : Route()
+
+
+@Serializable
+data object SearchScreenRoute : Route()

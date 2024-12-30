@@ -3,6 +3,7 @@ package com.davicaetano.weather.data.network.model
 import com.davicaetano.weather.model.Forecast
 import com.davicaetano.weather.model.UnitSystem
 import com.google.gson.annotations.SerializedName
+import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -33,7 +34,7 @@ data class ForecastDataResult (
                 low = listNM.mainNM.tempMin,
                 pressure = listNM.mainNM.pressure,
                 humidity = listNM.mainNM.humidity,
-                visibility = listNM.visibility,
+                visibility = listNM.visibility ?: BigDecimal.ZERO,
                 clouds = listNM.cloudsNM.all,
                 wind = listNM.windNM.toWind(),
                 location = cityNM.name,

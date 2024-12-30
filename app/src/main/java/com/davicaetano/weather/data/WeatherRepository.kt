@@ -5,6 +5,7 @@ import com.davicaetano.weather.data.network.service.WeatherApiService
 import com.davicaetano.weather.data.network.service.getString
 import com.davicaetano.weather.model.Coord
 import com.davicaetano.weather.model.Forecast
+import com.davicaetano.weather.model.Location
 import com.davicaetano.weather.model.UnitSystem
 import com.davicaetano.weather.model.Weather
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +24,8 @@ class WeatherRepository @Inject constructor(
     private val _forecastState = MutableStateFlow<ForecastState>(InitialForecastState())
     val forecastState = _forecastState.asStateFlow()
 
-    private val _locationState = MutableStateFlow<ForecastState>(InitialForecastState())
-    val forecastState = _locationState.asStateFlow()
+    private val _searchState = MutableStateFlow<SearchState>(InitialSearchState())
+    val searchState = _searchState.asStateFlow()
 
     suspend fun fetchWeather(
         coord: Coord,
@@ -70,19 +71,32 @@ class WeatherRepository @Inject constructor(
 
     suspend fun fetchGeoLocation(
         query: String,
-        unitSystem: UnitSystem,
     ) {
-        _forecastState.value = LoadingForecastState()
+        _searchState.value = LoadingSearchState()
         try {
             val result = weatherApiService.getLocationData(query)
             if (result.isSuccessful) {
-                _forecastState.value = SuccessForecastState(result.body()!!.toForecastList(unitSystem))
+                _searchState.value = SuccessSearchState(locationList = result.body()!!.map { it.toLocation() })
             } else {
-                _forecastState.value = ErrorForecastState(Throwable(result.errorBody().toString()))
+                _searchState.value = ErrorSearchState(error = Throwable(result.errorBody().toString()))
             }
         } catch (error: Throwable) {
-            _forecastState.value = ErrorForecastState(error)
+            _searchState.value = ErrorSearchState(error = error)
         }
+    }
+
+    fun onSearchChange(search: String) {
+        val state = _searchState.value
+        _searchState.value = when(state) {
+            is ErrorSearchState -> state.copy(searchField = search)
+            is InitialSearchState -> state.copy(searchField = search)
+            is LoadingSearchState -> state.copy(searchField = search)
+            is SuccessSearchState -> state.copy(searchField = search)
+        }
+    }
+
+    suspend fun onSearchClick() {
+        fetchGeoLocation(searchState.value.searchField)
     }
 }
 
@@ -99,9 +113,9 @@ class SuccessForecastState(val weather: List<Forecast>) : ForecastState()
 class ErrorForecastState(val error: Throwable) : ForecastState()
 
 
-sealed class LocationState()
-class InitialLocationState() : LocationState()
-class LoadingLocationState() : LocationState()
-class SuccessLocationState(val weather: List<Forecast>) : LocationState()
-class ErrorLocationState(val error: Throwable) : LocationState()
+sealed class SearchState(open val searchField: String = "")
+data class InitialSearchState(override val searchField: String = "") : SearchState()
+data class LoadingSearchState(override val searchField: String = "") : SearchState(searchField)
+data class SuccessSearchState(override val searchField: String = "", val locationList: List<Location>): SearchState()
+data class ErrorSearchState(override val searchField: String = "", val error: Throwable) : SearchState()
 
