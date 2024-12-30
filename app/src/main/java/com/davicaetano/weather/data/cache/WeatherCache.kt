@@ -34,8 +34,19 @@ class WeatherCache @Inject constructor(
     }
 
     suspend fun saveForecastList(forecastList: List<Forecast>, isLocal: Boolean) {
+        deleteForecastList(forecastList, isLocal)
         forecastList.forEach {
             weatherDao.insertForecast(it.toForecastDbM(isLocal))
+        }
+    }
+
+    private suspend fun deleteForecastList(forecastList: List<Forecast>, isLocal: Boolean) {
+        if (isLocal) {
+            weatherDao.deleteForecast(0.0, 0.0)
+        } else {
+            forecastList.firstOrNull()?.let {
+                weatherDao.deleteForecast(it.lat, it.lon)
+            }
         }
     }
 

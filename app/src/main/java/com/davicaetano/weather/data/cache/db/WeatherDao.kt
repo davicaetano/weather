@@ -28,8 +28,8 @@ interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertForecast(forecastDbM: ForecastDbM)
 
-    @Delete
-    suspend fun deleteForecast(forecastDbM: ForecastDbM)
+    @Query("DELETE FROM forecast WHERE lat = :lat AND lon = :lon")
+    suspend fun deleteForecast(lat: Double, lon: Double)
 
     @Query("SELECT * FROM location")
     fun getLocation(): Flow<List<LocationDbM>>
