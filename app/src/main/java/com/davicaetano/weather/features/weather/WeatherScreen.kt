@@ -3,24 +3,21 @@ package com.davicaetano.weather.features.weather
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davicaetano.weather.model.Imperial
+import com.davicaetano.weather.ui.components.ForecastListItem
 import com.davicaetano.weather.ui.components.HeaderItem
 import com.davicaetano.weather.ui.components.SunriseAndSunsetItem
 import com.davicaetano.weather.ui.components.WindItem
@@ -35,22 +32,33 @@ fun WeatherScreen(
     val viewModel: WeatherViewModel = hiltViewModel()
     val weatherViewState = viewModel.weatherViewState
         .collectAsStateWithLifecycle(InitialWeatherViewState).value
+    val forecastViewState = viewModel.forecastViewState
+        .collectAsStateWithLifecycle(InitialForecastViewState).value
 
     LaunchedEffect(viewModel) {
-        viewModel.fetch()
+        viewModel.fetchWeather()
+    }
+    LaunchedEffect(viewModel) {
+        viewModel.fetchForecast()
     }
 
     when (weatherViewState) {
         is InitialWeatherViewState -> Text("Initial")
         is LoadingWeatherViewState -> Text("Loading...")
         is ErrorWeatherViewState -> Text("Error: ${weatherViewState.error}")
-        is SuccessWeatherViewState -> Weather(weatherViewState.weatherItemViewState)
+        is SuccessWeatherViewState ->
+            WeatherScreen(
+                item = weatherViewState.weatherItemViewState,
+                forecastViewState = forecastViewState,
+                modifier = modifier
+            )
     }
 }
 
 @Composable
-fun Weather(
-    weather: WeatherItemViewState,
+fun WeatherScreen(
+    item: WeatherItemViewState,
+    forecastViewState: ForecastViewState,
     modifier: Modifier = Modifier
 ) {
 
@@ -60,43 +68,31 @@ fun Weather(
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
+        HeaderItem(item)
         Spacer(modifier = Modifier.height(16.dp))
-        HeaderItem(weather)
+        ForecastListItem(forecastViewState)
         Spacer(modifier = Modifier.height(16.dp))
         WindItem(
-            wind = weather.wind,
-            unit = weather.unit
+            wind = item.wind,
+            unitSystem = item.unitSystem
         )
         Spacer(modifier = Modifier.height(16.dp))
         SunriseAndSunsetItem(
-            sunrise = weather.sunrise,
-            sunset = weather.sunset,
+            sunrise = item.sunrise,
+            sunset = item.sunset,
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color.White)
-                .padding(16.dp)
-        ) {
-
-            Text(
-                text = "${weather}"
-            )
-        }
     }
-
 }
 
 @Preview(showBackground = true)
 @Composable
-fun WeatherPreview(
+fun WeatherScreenPreview(
     modifier: Modifier = Modifier
 ) {
     WeatherTheme {
-        Weather(
-            WeatherItemViewState(
+        WeatherScreen(
+            item = WeatherItemViewState(
                 toolbarTitle = "Manhattan",
                 title = "Mist",
                 temp = "74",
@@ -114,8 +110,9 @@ fun WeatherPreview(
                 clouds = "93",
                 sunrise = "7:30 AM",
                 sunset = "7:30 PM",
-                unit = Imperial,
-            )
+                unitSystem = Imperial,
+            ),
+            forecastViewState = InitialForecastViewState
         )
     }
 }

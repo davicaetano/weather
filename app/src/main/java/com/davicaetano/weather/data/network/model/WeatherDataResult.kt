@@ -1,6 +1,6 @@
 package com.davicaetano.weather.data.network.model
 
-import com.davicaetano.weather.model.Unit
+import com.davicaetano.weather.model.UnitSystem
 import com.davicaetano.weather.model.Weather
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
@@ -27,7 +27,7 @@ data class WeatherDataResult (
     @SerializedName("cod"        ) var cod          : Int,
 ) {
 
-    fun toWeather(unit: Unit): Weather {
+    fun toWeather(unitSystem: UnitSystem): Weather {
         return Weather(
             temp = mainNM.temp,
             date = LocalDateTime.ofInstant(
@@ -53,7 +53,7 @@ data class WeatherDataResult (
                 Instant.ofEpochMilli(sysWeatherNM.sunset.toLong() * 1000),
                 ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(timezone))
             ),
-            unit = unit,
+            unitSystem = unitSystem,
         )
     }
 }

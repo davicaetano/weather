@@ -2,9 +2,13 @@ package com.davicaetano.weather.features.weather
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.davicaetano.weather.data.ErrorForecastState
 import com.davicaetano.weather.data.ErrorWeatherState
+import com.davicaetano.weather.data.InitialForecastState
 import com.davicaetano.weather.data.InitialWeatherState
+import com.davicaetano.weather.data.LoadingForecastState
 import com.davicaetano.weather.data.LoadingWeatherState
+import com.davicaetano.weather.data.SuccessForecastState
 import com.davicaetano.weather.data.SuccessWeatherState
 import com.davicaetano.weather.data.WeatherRepository
 import com.davicaetano.weather.data.location.LocationRepository
@@ -23,22 +27,42 @@ class WeatherViewModel @Inject constructor(
     private val unitRepository: UnitRepository,
 ) : ViewModel() {
 
-    val weatherViewState = weatherRepository.weatherData.map {
+    val weatherViewState = weatherRepository.weatherState.map {
         when (it) {
             is InitialWeatherState -> InitialWeatherViewState
             is LoadingWeatherState -> LoadingWeatherViewState
             is ErrorWeatherState -> ErrorWeatherViewState(it.error.toString())
             is SuccessWeatherState -> SuccessWeatherViewState(
-                it.weather.toWeatherVS(weatherFormatter)
+                it.weather.toWeatherItemViewState(weatherFormatter)
             )
         }
     }
 
-    fun fetch() {
+    val forecastViewState = weatherRepository.forecastState.map {
+        when (it) {
+            is InitialForecastState -> InitialForecastViewState
+            is LoadingForecastState -> LoadingForecastViewState
+            is ErrorForecastState -> ErrorForecastViewState(it.error.toString())
+            is SuccessForecastState -> SuccessForecastViewState(it.weather.map {
+                it.toForecastItemViewState(weatherFormatter)
+            })
+        }
+    }
+
+    fun fetchWeather() {
         viewModelScope.launch {
             weatherRepository.fetchWeather(
                 coord = locationRepository.getLocation(),
-                unit = unitRepository.getUnit()
+                unitSystem = unitRepository.getUnit()
+            )
+        }
+    }
+
+    fun fetchForecast() {
+        viewModelScope.launch {
+            weatherRepository.fetchForecast(
+                coord = locationRepository.getLocation(),
+                unitSystem = unitRepository.getUnit()
             )
         }
     }

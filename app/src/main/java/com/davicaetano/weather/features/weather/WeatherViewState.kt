@@ -5,8 +5,7 @@ import androidx.compose.ui.text.intl.Locale
 import com.davicaetano.weather.model.Weather
 import com.davicaetano.weather.ui.WeatherFormatter
 import com.davicaetano.weather.features.toWeatherImageUrl
-import com.davicaetano.weather.model.Unit
-import java.time.LocalDateTime
+import com.davicaetano.weather.model.UnitSystem
 
 sealed class WeatherViewState()
 object InitialWeatherViewState: WeatherViewState()
@@ -29,11 +28,11 @@ data class WeatherItemViewState(
     val clouds: String,
     val sunrise: String,
     val sunset: String,
-    val unit: Unit,
+    val unitSystem: UnitSystem,
 
 //    val forecastVS: ForecastVS,
 )
-fun Weather.toWeatherVS(
+fun Weather.toWeatherItemViewState(
     weatherFormatter: WeatherFormatter,
 ): WeatherItemViewState {
     return WeatherItemViewState(
@@ -47,12 +46,11 @@ fun Weather.toWeatherVS(
         pressure = weatherFormatter.getPressure(this.pressure),
         humidity = weatherFormatter.getHumidity(this.pressure),
         visibility = weatherFormatter.getClouds(this.clouds),
-
         clouds = weatherFormatter.getClouds(this.clouds),
         wind = this.wind.toWindVS(weatherFormatter),
         sunrise = weatherFormatter.getTime(this.sunrise),
         sunset = weatherFormatter.getTime(this.sunset),
-        unit = this.unit,
+        unitSystem = this.unitSystem,
     )
 }
 

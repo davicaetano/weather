@@ -1,7 +1,7 @@
 package com.davicaetano.weather.data.unit
 
 import com.davicaetano.weather.model.Imperial
-import com.davicaetano.weather.model.Unit
+import com.davicaetano.weather.model.UnitSystem
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -10,7 +10,7 @@ class UnitRepository @Inject constructor(
 
 ) {
 
-    fun getUnit(): Unit {
+    fun getUnit(): UnitSystem {
         return Imperial
     }
 }

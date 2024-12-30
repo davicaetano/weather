@@ -19,5 +19,5 @@ data class Weather constructor(
     val location: String,
     val sunrise: LocalDateTime,
     val sunset: LocalDateTime,
-    val unit: Unit,
+    val unitSystem: UnitSystem,
 )

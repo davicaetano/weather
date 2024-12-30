@@ -27,12 +27,12 @@ import com.davicaetano.weather.R
 import com.davicaetano.weather.features.getRotateAngle
 import com.davicaetano.weather.features.getSpeedText
 import com.davicaetano.weather.features.weather.WindVS
-import com.davicaetano.weather.model.Unit
+import com.davicaetano.weather.model.UnitSystem
 
 @Composable
 fun WindItem(
     wind: WindVS,
-    unit: Unit,
+    unitSystem: UnitSystem,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -94,7 +94,7 @@ fun WindItem(
 
                 ) {
                     Text(
-                        text = wind.getSpeedText(LocalContext.current, unit),
+                        text = wind.getSpeedText(LocalContext.current, unitSystem),
                         style = MaterialTheme.typography.displaySmall,
                     )
                 }
