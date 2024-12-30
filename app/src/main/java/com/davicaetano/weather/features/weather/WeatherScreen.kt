@@ -7,15 +7,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.davicaetano.weather.R
 import com.davicaetano.weather.model.Imperial
 import com.davicaetano.weather.ui.components.ForecastListItem
 import com.davicaetano.weather.ui.components.HeaderItem
@@ -24,16 +31,37 @@ import com.davicaetano.weather.ui.components.WindItem
 import com.davicaetano.weather.ui.theme.WeatherTheme
 import java.math.BigDecimal
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherScreen(
-    modifier: Modifier = Modifier
+    viewModel: WeatherViewModel,
+    topbar: (@Composable () -> Unit) -> Unit,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
 
-    val viewModel: WeatherViewModel = hiltViewModel()
     val weatherViewState = viewModel.weatherViewState
         .collectAsStateWithLifecycle(InitialWeatherViewState).value
     val forecastViewState = viewModel.forecastViewState
         .collectAsStateWithLifecycle(InitialForecastViewState).value
+
+    topbar.invoke {
+        CenterAlignedTopAppBar(
+            title = { Text(text = if (weatherViewState is SuccessWeatherViewState) {
+                weatherViewState.weatherItemViewState.toolbarTitle
+            } else {
+                stringResource(R.string.app_name)
+            }) },
+            navigationIcon = {
+                IconButton(onClick = { onBackClick() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+            }
+        )
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.fetchWeather()
@@ -46,12 +74,13 @@ fun WeatherScreen(
         is InitialWeatherViewState -> Text("Initial")
         is LoadingWeatherViewState -> Text("Loading...")
         is ErrorWeatherViewState -> Text("Error: ${weatherViewState.error}")
-        is SuccessWeatherViewState ->
+        is SuccessWeatherViewState -> {
             WeatherScreen(
                 item = weatherViewState.weatherItemViewState,
                 forecastViewState = forecastViewState,
                 modifier = modifier
             )
+        }
     }
 }
 
@@ -68,6 +97,7 @@ fun WeatherScreen(
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
+        Spacer(modifier = Modifier.height(8.dp))
         HeaderItem(item)
         Spacer(modifier = Modifier.height(16.dp))
         ForecastListItem(forecastViewState)

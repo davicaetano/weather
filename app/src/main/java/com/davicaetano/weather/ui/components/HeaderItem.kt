@@ -22,6 +22,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.davicaetano.weather.R
 import com.davicaetano.weather.features.weather.WeatherItemViewState
+import com.davicaetano.weather.ui.theme.titleLarge2
 
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -53,7 +54,7 @@ fun HeaderItem(
         ) {
             Text(
                 text = "${weather.temp}",
-                style = MaterialTheme.typography.titleLarge
+                style = titleLarge2
             )
             GlideImage(
                 model = weather.iconUrl,

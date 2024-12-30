@@ -23,6 +23,9 @@ class WeatherRepository @Inject constructor(
     private val _forecastState = MutableStateFlow<ForecastState>(InitialForecastState())
     val forecastState = _forecastState.asStateFlow()
 
+    private val _locationState = MutableStateFlow<ForecastState>(InitialForecastState())
+    val forecastState = _locationState.asStateFlow()
+
     suspend fun fetchWeather(
         coord: Coord,
         unitSystem: UnitSystem,
@@ -64,6 +67,23 @@ class WeatherRepository @Inject constructor(
             _forecastState.value = ErrorForecastState(error)
         }
     }
+
+    suspend fun fetchGeoLocation(
+        query: String,
+        unitSystem: UnitSystem,
+    ) {
+        _forecastState.value = LoadingForecastState()
+        try {
+            val result = weatherApiService.getLocationData(query)
+            if (result.isSuccessful) {
+                _forecastState.value = SuccessForecastState(result.body()!!.toForecastList(unitSystem))
+            } else {
+                _forecastState.value = ErrorForecastState(Throwable(result.errorBody().toString()))
+            }
+        } catch (error: Throwable) {
+            _forecastState.value = ErrorForecastState(error)
+        }
+    }
 }
 
 sealed class WeatherState()
@@ -77,4 +97,11 @@ class InitialForecastState() : ForecastState()
 class LoadingForecastState() : ForecastState()
 class SuccessForecastState(val weather: List<Forecast>) : ForecastState()
 class ErrorForecastState(val error: Throwable) : ForecastState()
+
+
+sealed class LocationState()
+class InitialLocationState() : LocationState()
+class LoadingLocationState() : LocationState()
+class SuccessLocationState(val weather: List<Forecast>) : LocationState()
+class ErrorLocationState(val error: Throwable) : LocationState()
 

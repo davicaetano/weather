@@ -6,6 +6,9 @@ plugins {
     // hilt
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+
+    // navigation
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
@@ -53,6 +56,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
 
     // Hilt
@@ -63,6 +67,8 @@ dependencies {
 
     // Navigation: https://developer.android.com/develop/ui/compose/navigation
     implementation("androidx.navigation:navigation-compose:2.8.5")
+    // JSON serialization library, works with the Kotlin serialization plugin
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.11.0")

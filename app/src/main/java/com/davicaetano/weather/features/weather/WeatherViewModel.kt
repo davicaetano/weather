@@ -27,6 +27,8 @@ class WeatherViewModel @Inject constructor(
     private val unitRepository: UnitRepository,
 ) : ViewModel() {
 
+    val locationState = locationRepository.locationState
+
     val weatherViewState = weatherRepository.weatherState.map {
         when (it) {
             is InitialWeatherState -> InitialWeatherViewState
@@ -52,7 +54,7 @@ class WeatherViewModel @Inject constructor(
     fun fetchWeather() {
         viewModelScope.launch {
             weatherRepository.fetchWeather(
-                coord = locationRepository.getLocation(),
+                coord = locationRepository.getNyLocation(),
                 unitSystem = unitRepository.getUnit()
             )
         }
@@ -61,7 +63,7 @@ class WeatherViewModel @Inject constructor(
     fun fetchForecast() {
         viewModelScope.launch {
             weatherRepository.fetchForecast(
-                coord = locationRepository.getLocation(),
+                coord = locationRepository.getNyLocation(),
                 unitSystem = unitRepository.getUnit()
             )
         }

@@ -1,6 +1,7 @@
 package com.davicaetano.weather.data.network.service
 
 import com.davicaetano.weather.data.network.model.ForecastDataResult
+import com.davicaetano.weather.data.network.model.LocationDataResult
 import com.davicaetano.weather.data.network.model.WeatherDataResult
 import retrofit2.Response
 import retrofit2.http.GET
@@ -26,5 +27,11 @@ interface WeatherApiService {
         @Query("appid") apiKey: String = API_KEY,
     ): Response<WeatherDataResult>
 
+    @GET("geo/1.0/direct")
+    suspend fun getLocationData(
+        @Query("q") q: String,
+        @Query("limit") limit: Int = 10,
+        @Query("appid") apiKey: String = API_KEY,
+    ): Response<LocationDataResult>
 
 }
