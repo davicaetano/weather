@@ -15,7 +15,6 @@ import androidx.navigation.compose.rememberNavController
 import com.davicaetano.weather.features.locationlist.LocationListScreen
 import com.davicaetano.weather.features.search.SearchScreen
 import com.davicaetano.weather.features.weather.WeatherScreen
-import com.davicaetano.weather.features.weather.WeatherViewModel
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -97,6 +96,8 @@ fun MainScreen(
                         navHostController.navigateUp()
                         viewModel.saveLocation(location)
                     },
+                    onSearchFieldChange = { viewModel.onSearchChange(it) },
+                    onSearchClick = { viewModel.onSearchClick() },
                     topbar = { topbar.value = it }
                 )
             }

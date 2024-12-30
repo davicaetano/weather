@@ -1,4 +1,4 @@
-package com.davicaetano.weather.features.weather
+package com.davicaetano.weather.features.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +13,16 @@ import com.davicaetano.weather.data.SuccessWeatherState
 import com.davicaetano.weather.data.WeatherRepository
 import com.davicaetano.weather.data.location.LocationRepository
 import com.davicaetano.weather.data.unit.UnitRepository
+import com.davicaetano.weather.features.weather.ErrorForecastViewState
+import com.davicaetano.weather.features.weather.ErrorWeatherViewState
+import com.davicaetano.weather.features.weather.InitialForecastViewState
+import com.davicaetano.weather.features.weather.InitialWeatherViewState
+import com.davicaetano.weather.features.weather.LoadingForecastViewState
+import com.davicaetano.weather.features.weather.LoadingWeatherViewState
+import com.davicaetano.weather.features.weather.SuccessForecastViewState
+import com.davicaetano.weather.features.weather.SuccessWeatherViewState
+import com.davicaetano.weather.features.weather.toForecastItemViewState
+import com.davicaetano.weather.features.weather.toWeatherItemViewState
 import com.davicaetano.weather.model.Coord
 import com.davicaetano.weather.model.Location
 import com.davicaetano.weather.ui.WeatherFormatter
@@ -64,9 +74,8 @@ class WeatherViewModel @Inject constructor(
 
             is ErrorForecastState -> ErrorForecastViewState(
                 it.forecast?.map { it.toForecastItemViewState(weatherFormatter) },
-                it.error.toString()
+                    it.error.toString()
             )
-
             is SuccessForecastState -> SuccessForecastViewState(
                 it.forecast.map { it.toForecastItemViewState(weatherFormatter) }
             )

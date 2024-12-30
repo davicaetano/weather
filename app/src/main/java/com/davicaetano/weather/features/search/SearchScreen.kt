@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -37,7 +35,7 @@ import com.davicaetano.weather.data.ErrorSearchState
 import com.davicaetano.weather.data.InitialSearchState
 import com.davicaetano.weather.data.LoadingSearchState
 import com.davicaetano.weather.data.SuccessSearchState
-import com.davicaetano.weather.features.weather.WeatherViewModel
+import com.davicaetano.weather.features.main.WeatherViewModel
 import com.davicaetano.weather.model.Location
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,6 +44,8 @@ fun SearchScreen(
     viewModel: WeatherViewModel,
     onBackClick: () -> Unit,
     onSaveClick: (Location) -> Unit,
+    onSearchFieldChange: (String) -> Unit,
+    onSearchClick: () -> Unit,
     topbar: (@Composable () -> Unit) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -83,14 +83,12 @@ fun SearchScreen(
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = searchState.searchField,
-                onValueChange = {
-                    viewModel.onSearchChange(it)
-                },
+                onValueChange = { onSearchFieldChange(it) },
                 trailingIcon = {
                     Icon(
                         modifier = Modifier
                             .height(32.dp)
-                            .clickable { viewModel.onSearchClick() },
+                            .clickable { onSearchClick() },
                         painter = painterResource(R.drawable.search_72dp),
                         contentDescription = null
                     )

@@ -30,13 +30,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davicaetano.weather.R
-import com.davicaetano.weather.data.InitialSearchState
 import com.davicaetano.weather.data.location.DeniedLocationState
 import com.davicaetano.weather.data.location.InitialLocationState
 import com.davicaetano.weather.data.location.LoadingLocationState
-import com.davicaetano.weather.data.location.LocationState
 import com.davicaetano.weather.data.location.SuccessLocationState
-import com.davicaetano.weather.features.weather.WeatherViewModel
+import com.davicaetano.weather.features.main.WeatherViewModel
 import com.davicaetano.weather.model.Location
 import kotlinx.coroutines.flow.onEach
 

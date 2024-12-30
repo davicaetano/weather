@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davicaetano.weather.R
+import com.davicaetano.weather.features.main.WeatherViewModel
 import com.davicaetano.weather.model.Imperial
 import com.davicaetano.weather.ui.components.ForecastListItem
 import com.davicaetano.weather.ui.components.HeaderItem
