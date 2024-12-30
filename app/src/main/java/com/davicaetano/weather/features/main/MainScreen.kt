@@ -28,10 +28,12 @@ fun MainScreen(
 
     val viewModel: WeatherViewModel = hiltViewModel()
     val topbar = remember { mutableStateOf<@Composable () -> Unit>({}) }
+    val fab = remember { mutableStateOf<@Composable () -> Unit>({}) }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = topbar.value
+        topBar = topbar.value,
+        floatingActionButton = fab.value,
     ) { innerPadding ->
         NavHost(
             navController = navHostController,
@@ -41,7 +43,6 @@ fun MainScreen(
             composable<LocationListRoute>() {
                 LocationListScreen(
                     viewModel = viewModel,
-                    topbar = { topbar.value = it },
                     onCurrentLocationClick = {
                         onRequestLocationClick()
                     },
@@ -66,12 +67,14 @@ fun MainScreen(
                         navHostController.navigate(WeatherScreenRoute(10)) {
                             launchSingleTop = true
                         }
-                    }
+                    },
+                    topbar = { topbar.value = it },
+                    fab = { fab.value = it }
                 )
             }
 
             composable<WeatherScreenRoute>() {
-
+                fab.value = {}
                 WeatherScreen(
                     viewModel = viewModel,
                     topbar = { topbar.value = it },
@@ -80,7 +83,7 @@ fun MainScreen(
             }
 
             composable<SearchScreenRoute>() {
-
+                fab.value = {}
                 SearchScreen(
                     viewModel = viewModel,
                     onBackClick = { navHostController.navigateUp() },

@@ -72,11 +72,14 @@ class WeatherRepository @Inject constructor(
     suspend fun fetchGeoLocation(
         query: String,
     ) {
-        _searchState.value = LoadingSearchState()
+        _searchState.value = LoadingSearchState(query)
         try {
             val result = weatherApiService.getLocationData(query)
             if (result.isSuccessful) {
-                _searchState.value = SuccessSearchState(locationList = result.body()!!.map { it.toLocation() })
+                _searchState.value = SuccessSearchState(
+                    searchField = query,
+                    locationList = result.body()!!.map { it.toLocation() }
+                )
             } else {
                 _searchState.value = ErrorSearchState(error = Throwable(result.errorBody().toString()))
             }
@@ -86,17 +89,11 @@ class WeatherRepository @Inject constructor(
     }
 
     fun onSearchChange(search: String) {
-        val state = _searchState.value
-        _searchState.value = when(state) {
-            is ErrorSearchState -> state.copy(searchField = search)
-            is InitialSearchState -> state.copy(searchField = search)
-            is LoadingSearchState -> state.copy(searchField = search)
-            is SuccessSearchState -> state.copy(searchField = search)
-        }
+        _searchState.value = InitialSearchState(search)
     }
 
     suspend fun onSearchClick() {
-        fetchGeoLocation(searchState.value.searchField)
+        fetchGeoLocation(searchState.value.searchField.trim())
     }
 }
 
@@ -114,8 +111,8 @@ class ErrorForecastState(val error: Throwable) : ForecastState()
 
 
 sealed class SearchState(open val searchField: String = "")
-data class InitialSearchState(override val searchField: String = "") : SearchState()
-data class LoadingSearchState(override val searchField: String = "") : SearchState(searchField)
-data class SuccessSearchState(override val searchField: String = "", val locationList: List<Location>): SearchState()
-data class ErrorSearchState(override val searchField: String = "", val error: Throwable) : SearchState()
+class InitialSearchState(override val searchField: String = "") : SearchState()
+class LoadingSearchState(override val searchField: String = "") : SearchState(searchField)
+class SuccessSearchState(override val searchField: String = "", val locationList: List<Location>): SearchState()
+class ErrorSearchState(override val searchField: String = "", val error: Throwable) : SearchState()
 
