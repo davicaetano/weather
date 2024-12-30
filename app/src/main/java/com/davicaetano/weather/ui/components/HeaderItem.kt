@@ -32,9 +32,6 @@ fun HeaderItem(
     modifier: Modifier = Modifier
 ) {
 
-    val feelsLike = stringResource(R.string.feels_like, weather.feelsLike)
-    val highAndLow = stringResource(R.string.high_and_low, weather.high, weather.low)
-
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -53,7 +50,7 @@ fun HeaderItem(
             verticalAlignment = Alignment.Top,
         ) {
             Text(
-                text = "${weather.temp}",
+                text = weather.temp,
                 style = titleLarge2
             )
             GlideImage(
@@ -67,13 +64,13 @@ fun HeaderItem(
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "${feelsLike}",
+            text = stringResource(R.string.feels_like, weather.feelsLike),
             style = MaterialTheme.typography.headlineMedium,
             modifier = modifier.align(Alignment.CenterHorizontally),
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "${highAndLow}",
+            text = stringResource(R.string.high_and_low, weather.high, weather.low),
             style = MaterialTheme.typography.headlineSmall,
             modifier = modifier.align(Alignment.CenterHorizontally),
         )

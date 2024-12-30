@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.davicaetano.weather.R
 import com.davicaetano.weather.features.getRotateAngle
@@ -50,7 +51,7 @@ fun WindItem(
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = "Wind",
+                text = stringResource(R.string.wind),
                 style = MaterialTheme.typography.headlineMedium,
             )
         }
@@ -66,7 +67,7 @@ fun WindItem(
             ) {
 
                 Text(
-                    text = "Direction",
+                    text = stringResource(R.string.direction),
                     style = MaterialTheme.typography.headlineSmall,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -84,7 +85,7 @@ fun WindItem(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "Speed",
+                    text = stringResource(R.string.speed),
                     style = MaterialTheme.typography.headlineSmall,
                 )
                 Spacer(modifier = Modifier.height(16.dp))

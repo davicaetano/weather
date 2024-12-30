@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.davicaetano.weather.R
 
@@ -44,7 +45,7 @@ fun SunriseAndSunsetItem(
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = "Sunrise and Sunset",
+                text = stringResource(R.string.sunrise_and_sunset),
                 style = MaterialTheme.typography.headlineMedium,
             )
         }

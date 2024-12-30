@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -42,17 +43,16 @@ fun ForecastListItem(
 ) {
 
     when (forecastViewState) {
-        is InitialForecastViewState -> Text("Initial")
+        is InitialForecastViewState -> Text(stringResource(R.string.initial))
         is LoadingForecastViewState -> {
             if (forecastViewState.list != null) {
-                ForecastListItem(
-                    forecastViewState.list
-                )
+                ForecastListItem(forecastViewState.list!!)
             } else {
-                Text("Loading...")
+                Text(stringResource(R.string.loading))
             }
         }
-        is ErrorForecastViewState -> Text("Error: ${forecastViewState.error}")
+
+        is ErrorForecastViewState -> Text(stringResource(R.string.error,  forecastViewState.error))
         is SuccessForecastViewState -> ForecastListItem(
             forecastViewState.list
         )
@@ -81,7 +81,7 @@ fun ForecastListItem(
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = "Forecast",
+                text = stringResource(R.string.forecast),
                 style = MaterialTheme.typography.headlineMedium,
             )
         }
@@ -135,7 +135,7 @@ fun ForecastItem(
         Text(
             text = item.shortHour,
 
-        )
+            )
     }
 }
 

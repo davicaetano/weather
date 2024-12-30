@@ -8,4 +8,12 @@
     <string name="speed_imperial">%1$s mph</string>
     <string name="favorites">Favorites</string>
     <string name="no_favorites">Click bellow to add favorite locations</string>
+    <string name="initial">Initial</string>
+    <string name="loading">Loading...</string>
+    <string name="error">"Error: %1$s"</string>
+    <string name="forecast">Forecast</string>
+    <string name="sunrise_and_sunset">Sunrise and Sunset</string>
+    <string name="speed">Speed</string>
+    <string name="wind">Wind</string>
+    <string name="direction">Direction</string>
 </resources>
