@@ -40,7 +40,7 @@ class WeatherViewModel @Inject constructor(
     private val unitRepository: UnitRepository,
 ) : ViewModel() {
 
-    var jobList: MutableList<Job> = mutableListOf()
+    private var jobList: MutableList<Job> = mutableListOf()
 
     val locationState = locationRepository.locationState
     val favoriteState = locationRepository.favoriteState

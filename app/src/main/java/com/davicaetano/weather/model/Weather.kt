@@ -24,3 +24,27 @@ data class Weather constructor(
     val sunset: LocalDateTime,
     val unitSystem: UnitSystem,
 )
+
+fun getWeather(): Weather {
+    return Weather(
+        lat = 0.0,
+        lon = 0.0,
+        temp = BigDecimal.ZERO,
+        date = LocalDateTime.now(),
+        description = "",
+        icon = "",
+        feelsLike = BigDecimal.ZERO,
+        high = BigDecimal.ZERO,
+        low = BigDecimal.ZERO,
+        pressure = BigDecimal.ZERO,
+        humidity = BigDecimal.ZERO,
+        visibility = BigDecimal.ZERO,
+        clouds = BigDecimal.ZERO,
+        windSpeed = BigDecimal.ZERO,
+        windDeg = BigDecimal.ZERO,
+        location = "",
+        sunrise = LocalDateTime.now(),
+        sunset = LocalDateTime.now(),
+        unitSystem = Imperial,
+    )
+}
