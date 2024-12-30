@@ -13,13 +13,13 @@ class LocationRepository @Inject constructor(
     private val weatherCache: WeatherCache
 ) {
 
-    private val _locationState = MutableStateFlow<Coord?>(null)
+    private val _locationState = MutableStateFlow<LocationState>(InitialLocationState())
     val locationState = _locationState.asStateFlow()
 
     val favoriteState = weatherCache.getLocations()
 
-    fun setLocation(coord: Coord) {
-        _locationState.value = coord
+    fun setLocation(locationState: LocationState) {
+        _locationState.value = locationState
     }
 
     suspend fun saveFavorite(location: Location) {
@@ -30,3 +30,9 @@ class LocationRepository @Inject constructor(
         weatherCache.deleteLocation(location)
     }
 }
+
+sealed class LocationState()
+class InitialLocationState(): LocationState()
+class LoadingLocationState(): LocationState()
+class SuccessLocationState(val coord: Coord): LocationState()
+class DeniedLocationState(): LocationState()

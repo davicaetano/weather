@@ -90,7 +90,7 @@ class WeatherRepository @Inject constructor(
                     }
                 }.filter {
                     it.date >= LocalDateTime.now()
-                }
+                }.sortedBy { it.date }
             }
             .firstOrNull()
 

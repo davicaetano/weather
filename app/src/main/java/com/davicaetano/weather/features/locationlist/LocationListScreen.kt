@@ -31,6 +31,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davicaetano.weather.R
 import com.davicaetano.weather.data.InitialSearchState
+import com.davicaetano.weather.data.location.DeniedLocationState
+import com.davicaetano.weather.data.location.InitialLocationState
+import com.davicaetano.weather.data.location.LoadingLocationState
+import com.davicaetano.weather.data.location.LocationState
+import com.davicaetano.weather.data.location.SuccessLocationState
 import com.davicaetano.weather.features.weather.WeatherViewModel
 import com.davicaetano.weather.model.Location
 import kotlinx.coroutines.flow.onEach
@@ -54,13 +59,12 @@ fun LocationListScreen(
     val locationList = viewModel.favoriteState
         .collectAsStateWithLifecycle(listOf()).value
 
-
-    viewModel.locationState.onEach { location ->
-        if (location != null && state.value == 0) {
+    val locationState = viewModel.locationState.onEach { location ->
+        if (location is SuccessLocationState && state.value == 0) {
             state.value = 1
-            onLocationReturned(Location(lat = location.lat, lon = location.lon))
+            onLocationReturned(Location(lat = location.coord.lat, lon = location.coord.lon))
         }
-    }.collectAsStateWithLifecycle(InitialSearchState())
+    }.collectAsStateWithLifecycle(InitialLocationState()).value
 
 
     topbar.invoke {
@@ -102,7 +106,12 @@ fun LocationListScreen(
                 )
                 Spacer(modifier = Modifier.size(16.dp))
                 Text(
-                    text = "Current Location",
+                    text = when (locationState) {
+                        is DeniedLocationState -> "Location Denied"
+                        is InitialLocationState -> "Initial"
+                        is LoadingLocationState -> "Loading location"
+                        is SuccessLocationState -> "Current Location"
+                    },
                     style = MaterialTheme.typography.headlineMedium,
                 )
             }

@@ -7,7 +7,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.app.ActivityCompat
+import com.davicaetano.weather.data.location.DeniedLocationState
 import com.davicaetano.weather.data.location.LocationRepository
+import com.davicaetano.weather.data.location.SuccessLocationState
 import com.davicaetano.weather.model.Coord
 import com.davicaetano.weather.ui.theme.WeatherTheme
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -30,20 +32,18 @@ class MainActivity : ComponentActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         setContent {
             WeatherTheme {
-                MainScreen(
-                    onRequestLocationClick = {
-                        if (isLocationPermissionGranted()) {
-                            fusedLocationClient.lastLocation.addOnSuccessListener {
-                                locationRepository.setLocation(Coord(it.latitude, it.longitude))
-                            }
-                        }
-                    }
-                )
+                MainScreen(onRequestLocationClick = { askLocationPermission() })
             }
         }
+        askLocationPermission()
+    }
+
+    private fun askLocationPermission() {
         if (isLocationPermissionGranted()) {
             fusedLocationClient.lastLocation.addOnSuccessListener {
-                locationRepository.setLocation(Coord(it.latitude, it.longitude))
+                locationRepository.setLocation(
+                    SuccessLocationState(Coord(it.latitude, it.longitude))
+                )
             }
         }
     }
@@ -81,8 +81,12 @@ class MainActivity : ComponentActivity() {
         if (requestCode == 0) {
             if (grantResults.contains(PackageManager. PERMISSION_GRANTED)) {
                 fusedLocationClient.lastLocation.addOnSuccessListener {
-                    locationRepository.setLocation(Coord(it.latitude, it.longitude))
+                    locationRepository.setLocation(
+                        SuccessLocationState(Coord(it.latitude, it.longitude))
+                    )
                 }
+            } else {
+                locationRepository.setLocation(DeniedLocationState())
             }
         }
     }
