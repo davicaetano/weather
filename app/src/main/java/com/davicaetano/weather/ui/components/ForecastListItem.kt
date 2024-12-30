@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,10 +43,18 @@ fun ForecastListItem(
 
     when (forecastViewState) {
         is InitialForecastViewState -> Text("Initial")
-        is LoadingForecastViewState -> Text("Loading...")
+        is LoadingForecastViewState -> {
+            if (forecastViewState.list != null) {
+                ForecastListItem(
+                    forecastViewState.list
+                )
+            } else {
+                Text("Loading...")
+            }
+        }
         is ErrorForecastViewState -> Text("Error: ${forecastViewState.error}")
         is SuccessForecastViewState -> ForecastListItem(
-            forecastViewState.forecastItemViewStateList
+            forecastViewState.list
         )
     }
 }

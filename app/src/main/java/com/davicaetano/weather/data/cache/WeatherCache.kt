@@ -1,8 +1,10 @@
 package com.davicaetano.weather.data.cache
 
 import com.davicaetano.weather.data.cache.db.WeatherDao
-import com.davicaetano.weather.data.cache.model.LocationDbM
-import com.davicaetano.weather.data.cache.model.WeatherDbM
+import com.davicaetano.weather.data.cache.model.toForecastDbM
+import com.davicaetano.weather.data.cache.model.toLocationDbM
+import com.davicaetano.weather.data.cache.model.toWeatherDbM
+import com.davicaetano.weather.model.Forecast
 import com.davicaetano.weather.model.Location
 import com.davicaetano.weather.model.Weather
 import kotlinx.coroutines.flow.Flow
@@ -16,101 +18,37 @@ class WeatherCache @Inject constructor(
 ) {
 
     fun getWeather(): Flow<List<Weather>> {
-        return weatherDao.getWeather().map {
-            it.map {
-                Weather(
-                    lat = it.lat,
-                    lon = it.lon,
-                    temp = it.temp,
-                    date = it.date,
-                    description = it.description,
-                    icon = it.icon,
-                    feelsLike = it.feelsLike,
-                    high = it.high,
-                    low = it.low,
-                    pressure = it.pressure,
-                    humidity = it.humidity,
-                    visibility = it.visibility,
-                    clouds = it.clouds,
-                    windSpeed = it.windSpeed,
-                    windDeg = it.windDeg,
-                    location = it.location,
-                    sunrise = it.sunrise,
-                    sunset = it.sunset,
-                    unitSystem = it.unitSystem,
+        return weatherDao.getWeather().map { it.map { it.toWeather() } }
+    }
 
-                )
-            }
+    suspend fun saveWeather(weather: Weather, isLocal: Boolean) {
+        weatherDao.insertWeather(weather.toWeatherDbM(isLocal))
+    }
 
+    fun getForecast(): Flow<List<Forecast>> {
+        return weatherDao.getForecast().map { it.map { it.toForecast() } }
+    }
+
+    suspend fun saveForecast(forecast: Forecast, isLocal: Boolean) {
+        weatherDao.insertForecast(forecast.toForecastDbM(isLocal))
+    }
+
+    suspend fun saveForecastList(forecastList: List<Forecast>, isLocal: Boolean) {
+        forecastList.forEach {
+            weatherDao.insertForecast(it.toForecastDbM(isLocal))
         }
     }
-    
-    suspend fun saveWeather(weather: Weather) {
-        weatherDao.insertWeather(
-            WeatherDbM(
-                lat = weather.lat,
-                lon = weather.lon,
-                temp = weather.temp,
-                date = weather.date,
-                description = weather.description,
-                icon = weather.icon,
-                feelsLike = weather.feelsLike,
-                high = weather.high,
-                low = weather.low,
-                pressure = weather.pressure,
-                humidity = weather.humidity,
-                visibility = weather.visibility,
-                clouds = weather.clouds,
-                windSpeed = weather.windSpeed,
-                windDeg = weather.windDeg,
-                location = weather.location,
-                sunrise = weather.sunrise,
-                sunset = weather.sunset,
-                unitSystem = weather.unitSystem,
-            )
-        )
-    }
+
 
     fun getLocations(): Flow<List<Location>> {
-        return weatherDao.getLocation()
-            .map {
-                it.map {
-                    Location(
-                        name = it.name,
-                        lat = it.lat,
-                        lon = it.lon,
-                        country = it.country,
-                        state = it.state
-                    )
-                }
-            }
+        return weatherDao.getLocation().map { it.map { it.toLocation() } }
     }
 
     suspend fun saveLocation(location: Location) {
-        weatherDao.insertLocation(
-            LocationDbM(
-                id = "${location.lat} - ${location.lon}",
-                name = location.name,
-                lat = location.lat,
-                lon = location.lon,
-                state = location.state,
-                country = location.country,
-
-            )
-        )
+        weatherDao.insertLocation(location.toLocationDbM())
     }
 
     suspend fun deleteLocation(location: Location) {
-        weatherDao.deleteLocation(
-            LocationDbM(
-                id = "${location.lat} - ${location.lon}",
-                name = location.name,
-                lat = location.lat,
-                lon = location.lon,
-                state = location.state,
-                country = location.country,
-
-                )
-        )
+        weatherDao.deleteLocation(location.toLocationDbM())
     }
 }

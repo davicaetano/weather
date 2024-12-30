@@ -3,7 +3,7 @@ package com.davicaetano.weather.model
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-data class Weather(
+data class Weather constructor(
     val lat: Double,
     val lon: Double,
     val temp: BigDecimal,

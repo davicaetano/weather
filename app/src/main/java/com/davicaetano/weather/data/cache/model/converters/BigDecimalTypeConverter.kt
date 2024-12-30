@@ -1,4 +1,4 @@
-package com.davicaetano.weather.data.cache.model
+package com.davicaetano.weather.data.cache.model.converters
 
 import androidx.room.TypeConverter
 import java.math.BigDecimal

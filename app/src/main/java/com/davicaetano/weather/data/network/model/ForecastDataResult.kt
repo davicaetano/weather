@@ -10,18 +10,24 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 
 
-data class ForecastDataResult (
+data class ForecastDataResult(
 
-    @SerializedName("cod"     ) var cod     : String?         = null,
-    @SerializedName("message" ) var message : Int?            = null,
-    @SerializedName("cnt"     ) var cnt     : Int?            = null,
-    @SerializedName("list"    ) var listNM  : ArrayList<ListNM> = arrayListOf(),
-    @SerializedName("city"    ) var cityNM  : CityNM,
+    @SerializedName("cod") var cod: String? = null,
+    @SerializedName("message") var message: Int? = null,
+    @SerializedName("cnt") var cnt: Int? = null,
+    @SerializedName("list") var listNM: ArrayList<ListNM> = arrayListOf(),
+    @SerializedName("city") var cityNM: CityNM,
 
-) {
-    fun toForecastList(unitSystem: UnitSystem): List<Forecast> {
+    ) {
+    fun toForecastList(
+        lat: Double,
+        lon: Double,
+        unitSystem: UnitSystem
+    ): List<Forecast> {
         return this.listNM.map { listNM ->
             Forecast(
+                lat = lat,
+                lon = lon,
                 temp = listNM.mainNM.temp,
                 date = LocalDateTime.ofInstant(
                     Instant.ofEpochMilli(listNM.date.toLong() * 1000),
@@ -36,6 +42,8 @@ data class ForecastDataResult (
                 humidity = listNM.mainNM.humidity,
                 visibility = listNM.visibility ?: BigDecimal.ZERO,
                 clouds = listNM.cloudsNM.all,
+                windSpeed = listNM.windNM.speed,
+                windDeg = listNM.windNM.deg,
                 location = cityNM.name,
                 sunrise = LocalDateTime.ofInstant(
                     Instant.ofEpochMilli(cityNM.sunrise.toLong() * 1000),

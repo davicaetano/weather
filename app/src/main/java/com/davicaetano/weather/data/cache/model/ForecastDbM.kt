@@ -2,18 +2,19 @@ package com.davicaetano.weather.data.cache.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.davicaetano.weather.model.Forecast
 import com.davicaetano.weather.model.UnitSystem
-import com.davicaetano.weather.model.Weather
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-@Entity(tableName = "weather")
-data class WeatherDbM(
+@Entity(tableName = "forecast")
+data class ForecastDbM(
     val lat: Double,
     val lon: Double,
-    @PrimaryKey val id: String = "${lat} - ${lon}",
+
     val temp: BigDecimal,
     val date: LocalDateTime,
+    @PrimaryKey val id: String = "${lat} - ${lon} - ${date}",
     val description: String,
     val icon: String,
     val feelsLike: BigDecimal,
@@ -30,8 +31,8 @@ data class WeatherDbM(
     val sunset: LocalDateTime,
     val unitSystem: UnitSystem,
 ) {
-    fun toWeather(): Weather {
-        return Weather(
+    fun toForecast(): Forecast {
+        return Forecast(
             lat = this.lat,
             lon = this.lon,
             temp = this.temp,
@@ -55,8 +56,8 @@ data class WeatherDbM(
     }
 }
 
-fun Weather.toWeatherDbM(isLocal: Boolean): WeatherDbM {
-    return WeatherDbM(
+fun Forecast.toForecastDbM(isLocal: Boolean): ForecastDbM {
+    return ForecastDbM(
         lat = if (isLocal) 0.0 else this.lat,
         lon = if (isLocal) 0.0 else this.lon,
         temp = this.temp,

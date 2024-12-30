@@ -57,29 +57,38 @@ class WeatherViewModel @Inject constructor(
 
     val forecastViewState = weatherRepository.forecastState.map {
         when (it) {
-            is InitialForecastState -> InitialForecastViewState
-            is LoadingForecastState -> LoadingForecastViewState
-            is ErrorForecastState -> ErrorForecastViewState(it.error.toString())
-            is SuccessForecastState -> SuccessForecastViewState(it.weather.map {
-                it.toForecastItemViewState(weatherFormatter)
-            })
+            is InitialForecastState -> InitialForecastViewState()
+            is LoadingForecastState -> LoadingForecastViewState(
+                it.forecast?.map { it.toForecastItemViewState(weatherFormatter) }
+            )
+
+            is ErrorForecastState -> ErrorForecastViewState(
+                it.forecast?.map { it.toForecastItemViewState(weatherFormatter) },
+                it.error.toString()
+            )
+
+            is SuccessForecastState -> SuccessForecastViewState(
+                it.forecast.map { it.toForecastItemViewState(weatherFormatter) }
+            )
         }
     }
 
-    fun fetchWeather(location: Location) {
+    fun fetchWeather(location: Location, isLocal: Boolean) {
         viewModelScope.launch {
             weatherRepository.fetchWeather(
                 coord = Coord(lat = location.lat, lon = location.lon),
-                unitSystem = unitRepository.getUnit()
+                unitSystem = unitRepository.getUnit(),
+                isLocal = isLocal
             )
         }.let { jobList.add(it) }
     }
 
-    fun fetchForecast(location: Location) {
+    fun fetchForecast(location: Location, isLocal: Boolean) {
         viewModelScope.launch {
             weatherRepository.fetchForecast(
                 coord = Coord(lat = location.lat, lon = location.lon),
-                unitSystem = unitRepository.getUnit()
+                unitSystem = unitRepository.getUnit(),
+                isLocal
             )
         }.let { jobList.add(it) }
     }

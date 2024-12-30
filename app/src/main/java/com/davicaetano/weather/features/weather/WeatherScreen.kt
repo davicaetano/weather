@@ -41,7 +41,7 @@ fun WeatherScreen(
     val weatherViewState = viewModel.weatherViewState
         .collectAsStateWithLifecycle(InitialWeatherViewState).value
     val forecastViewState = viewModel.forecastViewState
-        .collectAsStateWithLifecycle(InitialForecastViewState).value
+        .collectAsStateWithLifecycle(InitialForecastViewState()).value
 
     topbar.invoke {
         val item = weatherViewState.weatherItemViewState
@@ -149,7 +149,7 @@ fun WeatherScreenPreview(
                 sunset = "7:30 PM",
                 unitSystem = Imperial,
             ),
-            forecastViewState = InitialForecastViewState
+            forecastViewState = InitialForecastViewState()
         )
     }
 }

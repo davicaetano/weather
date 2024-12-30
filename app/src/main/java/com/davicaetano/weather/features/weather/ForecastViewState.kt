@@ -8,11 +8,17 @@ import com.davicaetano.weather.model.UnitSystem
 import com.davicaetano.weather.ui.WeatherFormatter
 
 
-sealed class ForecastViewState()
-object InitialForecastViewState : ForecastViewState()
-object LoadingForecastViewState : ForecastViewState()
-data class SuccessForecastViewState(val forecastItemViewStateList: List<ForecastItemViewState>) : ForecastViewState()
-data class ErrorForecastViewState(val error: String) : ForecastViewState()
+sealed class ForecastViewState(open val list: List<ForecastItemViewState>?)
+class InitialForecastViewState() : ForecastViewState(null)
+
+class LoadingForecastViewState(override val list: List<ForecastItemViewState>?) :
+    ForecastViewState(list)
+
+class SuccessForecastViewState(override val list: List<ForecastItemViewState>) :
+    ForecastViewState(list)
+
+class ErrorForecastViewState(override val list: List<ForecastItemViewState>?, val error: String) :
+    ForecastViewState(list)
 
 data class ForecastItemViewState(
     val toolbarTitle: String,
@@ -34,7 +40,8 @@ data class ForecastItemViewState(
     val dayOfWeek: String,
     val shortHour: String,
 
-)
+    )
+
 fun Forecast.toForecastItemViewState(
     weatherFormatter: WeatherFormatter,
 ): ForecastItemViewState {

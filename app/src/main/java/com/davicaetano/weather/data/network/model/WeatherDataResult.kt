@@ -49,7 +49,6 @@ data class WeatherDataResult (
             humidity = mainNM.humidity,
             visibility = visibility,
             clouds = cloudsNM.all,
-
             windSpeed = windNM.speed,
             windDeg = windNM.deg,
             location = name,

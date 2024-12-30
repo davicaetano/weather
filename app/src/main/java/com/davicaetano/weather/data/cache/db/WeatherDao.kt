@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.davicaetano.weather.data.cache.model.ForecastDbM
 import com.davicaetano.weather.data.cache.model.LocationDbM
 import com.davicaetano.weather.data.cache.model.WeatherDbM
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +21,15 @@ interface WeatherDao {
 
     @Delete
     suspend fun deleteWeather(weatherDbM: WeatherDbM)
+
+    @Query("SELECT * FROM forecast")
+    fun getForecast(): Flow<List<ForecastDbM>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertForecast(forecastDbM: ForecastDbM)
+
+    @Delete
+    suspend fun deleteForecast(forecastDbM: ForecastDbM)
 
     @Query("SELECT * FROM location")
     fun getLocation(): Flow<List<LocationDbM>>

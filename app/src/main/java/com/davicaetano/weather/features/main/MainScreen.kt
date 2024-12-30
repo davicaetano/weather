@@ -47,8 +47,8 @@ fun MainScreen(
                         onRequestLocationClick()
                     },
                     onFavoriteLocationClick = { location ->
-                        viewModel.fetchWeather(location)
-                        viewModel.fetchForecast(location)
+                        viewModel.fetchWeather(location, false)
+                        viewModel.fetchForecast(location, false)
                         navHostController.navigate(WeatherScreenRoute(10)) {
                             launchSingleTop = true
                         }
@@ -62,8 +62,8 @@ fun MainScreen(
                         viewModel.deleteLocation(location)
                     },
                     onLocationReturned = { location ->
-                        viewModel.fetchWeather(location)
-                        viewModel.fetchForecast(location)
+                        viewModel.fetchWeather(location, true)
+                        viewModel.fetchForecast(location, true)
                         navHostController.navigate(WeatherScreenRoute(10)) {
                             launchSingleTop = true
                         }
