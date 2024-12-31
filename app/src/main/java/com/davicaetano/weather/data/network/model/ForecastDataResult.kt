@@ -28,30 +28,30 @@ data class ForecastDataResult(
             Forecast(
                 lat = lat,
                 lon = lon,
-                temp = listNM.mainNM.temp,
+                temp = listNM.mainNM?.temp ?: BigDecimal.ZERO,
                 date = LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(listNM.date.toLong() * 1000),
-                    ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(cityNM.timezone))
+                    Instant.ofEpochMilli((listNM.date?.toLong() ?: 0) * 1000),
+                    ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(cityNM.timezone ?: 0))
                 ),
-                description = listNM.weatherNM.getOrNull(0)?.description ?: "",
-                icon = listNM.weatherNM.getOrNull(0)?.icon ?: "",
-                feelsLike = listNM.mainNM.feelsLike,
-                high = listNM.mainNM.tempMax,
-                low = listNM.mainNM.tempMin,
-                pressure = listNM.mainNM.pressure,
-                humidity = listNM.mainNM.humidity,
+                description = listNM.weatherNM?.getOrNull(0)?.description ?: "",
+                icon = listNM.weatherNM?.getOrNull(0)?.icon ?: "",
+                feelsLike = listNM.mainNM?.feelsLike ?: BigDecimal.ZERO,
+                high = listNM.mainNM?.tempMax ?: BigDecimal.ZERO,
+                low = listNM.mainNM?.tempMin ?: BigDecimal.ZERO,
+                pressure = listNM.mainNM?.pressure ?: BigDecimal.ZERO,
+                humidity = listNM.mainNM?.humidity ?: BigDecimal.ZERO,
                 visibility = listNM.visibility ?: BigDecimal.ZERO,
-                clouds = listNM.cloudsNM.all,
-                windSpeed = listNM.windNM.speed,
-                windDeg = listNM.windNM.deg,
-                location = cityNM.name,
+                clouds = listNM.cloudsNM?.all ?: BigDecimal.ZERO,
+                windSpeed = listNM.windNM?.speed ?: BigDecimal.ZERO,
+                windDeg = listNM.windNM?.deg ?: BigDecimal.ZERO,
+                location = cityNM.name ?: "",
                 sunrise = LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(cityNM.sunrise.toLong() * 1000),
-                    ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(cityNM.timezone))
+                    Instant.ofEpochMilli((cityNM.sunrise?.toLong() ?: 0) * 1000),
+                    ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(cityNM.timezone ?: 0))
                 ),
                 sunset = LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(cityNM.sunset.toLong() * 1000),
-                    ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(cityNM.timezone))
+                    Instant.ofEpochMilli((cityNM.sunset?.toLong() ?: 0) * 1000),
+                    ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(cityNM.timezone ?: 0))
                 ),
                 unitSystem = unitSystem,
             )

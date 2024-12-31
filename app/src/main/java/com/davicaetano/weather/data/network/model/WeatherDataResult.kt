@@ -1,6 +1,5 @@
 package com.davicaetano.weather.data.network.model
 
-import com.davicaetano.weather.model.Coord
 import com.davicaetano.weather.model.UnitSystem
 import com.davicaetano.weather.model.Weather
 import com.google.gson.annotations.SerializedName
@@ -36,29 +35,29 @@ data class WeatherDataResult (
         return Weather(
             lat = lat,
             lon = lon,
-            temp = mainNM.temp,
+            temp = mainNM.temp ?: BigDecimal.ZERO,
             date = LocalDateTime.ofInstant(
                 Instant.ofEpochMilli(date.toLong() * 1000),
                 ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(timezone))
             ),
             description = weatherNM.getOrNull(0)?.description ?: "",
             icon = weatherNM.getOrNull(0)?.icon ?: "",
-            feelsLike = mainNM.feelsLike,
-            high = mainNM.tempMax,
-            low = mainNM.tempMin,
-            pressure = mainNM.pressure,
-            humidity = mainNM.humidity,
+            feelsLike = mainNM.feelsLike ?: BigDecimal.ZERO,
+            high = mainNM.tempMax ?: BigDecimal.ZERO,
+            low = mainNM.tempMin ?: BigDecimal.ZERO,
+            pressure = mainNM.pressure ?: BigDecimal.ZERO,
+            humidity = mainNM.humidity ?: BigDecimal.ZERO,
             visibility = visibility,
-            clouds = cloudsNM.all,
-            windSpeed = windNM.speed,
-            windDeg = windNM.deg,
+            clouds = cloudsNM.all ?: BigDecimal.ZERO,
+            windSpeed = windNM.speed ?: BigDecimal.ZERO,
+            windDeg = windNM.deg ?: BigDecimal.ZERO,
             location = name,
             sunrise = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(sysWeatherNM.sunrise.toLong() * 1000),
+                Instant.ofEpochMilli((sysWeatherNM.sunrise?.toLong() ?: 0) * 1000),
                 ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(timezone))
             ),
             sunset = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(sysWeatherNM.sunset.toLong() * 1000),
+                Instant.ofEpochMilli((sysWeatherNM.sunset?.toLong()?: 0) * 1000),
                 ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(timezone))
             ),
             unitSystem = unitSystem,
