@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -72,11 +73,13 @@ fun LocationListScreen(
     }
     fab.invoke {
         FloatingActionButton(
-            onClick = { onSearchClick() }
+            onClick = { onSearchClick() },
+            shape = CircleShape,
         ) {
             Icon(
                 painter = painterResource(R.drawable.favorite_72dp),
-                contentDescription = "Save"
+                contentDescription = "Save",
+                modifier = Modifier.padding(16.dp)
             )
         }
     }
@@ -94,7 +97,8 @@ fun LocationListScreen(
                 .background(MaterialTheme.colorScheme.primary)
                 .padding(16.dp)
         ) {
-            Row(modifier = Modifier
+            Row(
+                modifier = Modifier
 
             ) {
                 Icon(
