@@ -2,16 +2,12 @@ package com.davicaetano.weather
 
 import app.cash.turbine.test
 import com.davicaetano.weather.data.ErrorForecastState
-import com.davicaetano.weather.data.ErrorSearchState
 import com.davicaetano.weather.data.ErrorWeatherState
 import com.davicaetano.weather.data.InitialForecastState
-import com.davicaetano.weather.data.InitialSearchState
 import com.davicaetano.weather.data.InitialWeatherState
 import com.davicaetano.weather.data.LoadingForecastState
-import com.davicaetano.weather.data.LoadingSearchState
 import com.davicaetano.weather.data.LoadingWeatherState
 import com.davicaetano.weather.data.SuccessForecastState
-import com.davicaetano.weather.data.SuccessSearchState
 import com.davicaetano.weather.data.SuccessWeatherState
 import com.davicaetano.weather.data.WeatherRepository
 import com.davicaetano.weather.data.cache.WeatherCache
@@ -229,56 +225,6 @@ class WeatherRepositoryTest {
         }
     }
 
-    @Test
-    fun `test search api Happy Path`() {
-        testScope.runTest {
-
-            basicSetup()
-
-            weatherRepository = WeatherRepository(
-                weatherApiService,
-                weatherCache
-            )
-
-            weatherRepository.searchState.test {
-                assertThat(awaitItem()).isInstanceOf(InitialSearchState::class.java)
-                weatherRepository.onSearchChange("Manhattan")
-                assertThat(awaitItem()).isInstanceOf(InitialSearchState::class.java)
-                weatherRepository.fetchSearch()
-                assertThat(awaitItem()).isInstanceOf(LoadingSearchState::class.java)
-                assertThat(awaitItem()).isInstanceOf(SuccessSearchState::class.java)
-            }
-        }
-    }
-
-    @Test
-    fun `test search api error`() {
-        testScope.runTest {
-
-            basicSetup()
-
-            coEvery {
-                weatherApiService.getLocationData(any(), any(), any())
-            } returns retrofit2.Response.error(
-                404,
-                "".toResponseBody("application/json; charset=utf-8".toMediaType())
-            )
-
-            weatherRepository = WeatherRepository(
-                weatherApiService,
-                weatherCache
-            )
-
-            weatherRepository.searchState.test {
-                assertThat(awaitItem()).isInstanceOf(InitialSearchState::class.java)
-                weatherRepository.onSearchChange("Manhattan")
-                assertThat(awaitItem()).isInstanceOf(InitialSearchState::class.java)
-                weatherRepository.fetchSearch()
-                assertThat(awaitItem()).isInstanceOf(LoadingSearchState::class.java)
-                assertThat(awaitItem()).isInstanceOf(ErrorSearchState::class.java)
-            }
-        }
-    }
 
     private fun basicSetup() {
 
@@ -302,9 +248,5 @@ class WeatherRepositoryTest {
 
         coEvery { weatherCache.saveForecast(any(), any()) } just runs
         coEvery { weatherCache.saveForecastList(any(), any()) } just runs
-
-        coEvery {
-            weatherApiService.getLocationData(any(), any(), any())
-        } returns retrofit2.Response.success(200, listOf())
     }
 }

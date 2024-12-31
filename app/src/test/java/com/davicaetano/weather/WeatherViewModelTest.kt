@@ -171,7 +171,7 @@ class WeatherViewModelTest {
 
             basicSetup()
 
-            coEvery { weatherRepository.searchState } returns MutableStateFlow(
+            coEvery { locationRepository.searchState } returns MutableStateFlow(
                 ErrorSearchState(
                     searchField = "",
                     error = Throwable()
@@ -219,7 +219,7 @@ class WeatherViewModelTest {
             listOf(Location())
         ).asStateFlow()
 
-        coEvery { weatherRepository.searchState } returns MutableStateFlow(
+        coEvery { locationRepository.searchState } returns MutableStateFlow(
             SuccessSearchState(
                 searchField = "",
                 locationList = listOf()

@@ -45,7 +45,7 @@ class WeatherViewModel @Inject constructor(
     val locationState = locationRepository.locationState
     val favoriteState = locationRepository.favoriteState
 
-    val searchState = weatherRepository.searchState
+    val searchState = locationRepository.searchState
 
     val weatherViewState = weatherRepository.weatherState.map {
         when (it) {
@@ -103,12 +103,12 @@ class WeatherViewModel @Inject constructor(
     }
 
     fun onSearchChange(search: String) {
-        weatherRepository.onSearchChange(search)
+        locationRepository.onSearchChange(search)
     }
 
     fun onSearchClick() {
         viewModelScope.launch {
-            weatherRepository.fetchSearch()
+            locationRepository.fetchSearch()
         }.let { jobList.add(it) }
     }
 

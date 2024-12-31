@@ -28,9 +28,6 @@ class WeatherRepository @Inject constructor(
     private val _forecastState = MutableStateFlow<ForecastState>(InitialForecastState())
     val forecastState = _forecastState.asStateFlow()
 
-    private val _searchState = MutableStateFlow<SearchState>(InitialSearchState())
-    val searchState = _searchState.asStateFlow()
-
     suspend fun fetchWeather(
         coord: Coord,
         unitSystem: UnitSystem,
@@ -116,34 +113,6 @@ class WeatherRepository @Inject constructor(
         } catch (error: Throwable) {
             _forecastState.value = ErrorForecastState(cache, error)
         }
-    }
-
-    private suspend fun fetchGeoLocation(
-        query: String,
-    ) {
-        _searchState.value = LoadingSearchState(query)
-        try {
-            val result = weatherApiService.getLocationData(query)
-            if (result.isSuccessful) {
-                _searchState.value = SuccessSearchState(
-                    searchField = query,
-                    locationList = result.body()!!.map { it.toLocation() }
-                )
-            } else {
-                _searchState.value =
-                    ErrorSearchState(error = Throwable(result.errorBody().toString()))
-            }
-        } catch (error: Throwable) {
-            _searchState.value = ErrorSearchState(error = error)
-        }
-    }
-
-    fun onSearchChange(search: String) {
-        _searchState.value = InitialSearchState(search)
-    }
-
-    suspend fun fetchSearch() {
-        fetchGeoLocation(searchState.value.searchField.trim())
     }
 }
 
