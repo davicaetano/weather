@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
 
-data class CloudsNM (
+data class CloudsNM(
 
-    @SerializedName("all" ) var all : BigDecimal? = BigDecimal.ZERO
+    @SerializedName("all") var all: BigDecimal? = BigDecimal.ZERO
 
 )
