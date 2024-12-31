@@ -48,7 +48,7 @@ fun MainScreen(
                     onFavoriteLocationClick = { location ->
                         viewModel.fetchWeather(location, false)
                         viewModel.fetchForecast(location, false)
-                        navHostController.navigate(WeatherScreenRoute(10)) {
+                        navHostController.navigate(WeatherScreenRoute) {
                             launchSingleTop = true
                         }
                     },
@@ -63,7 +63,7 @@ fun MainScreen(
                     onLocationReturned = { location ->
                         viewModel.fetchWeather(location, true)
                         viewModel.fetchForecast(location, true)
-                        navHostController.navigate(WeatherScreenRoute(10)) {
+                        navHostController.navigate(WeatherScreenRoute) {
                             launchSingleTop = true
                         }
                     },
@@ -111,8 +111,7 @@ sealed class Route
 data object LocationListRoute : Route()
 
 @Serializable
-data class WeatherScreenRoute(val id: Int) : Route()
-
+data object WeatherScreenRoute : Route()
 
 @Serializable
 data object SearchScreenRoute : Route()
