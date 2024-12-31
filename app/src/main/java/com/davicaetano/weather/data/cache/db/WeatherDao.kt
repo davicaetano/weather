@@ -19,8 +19,8 @@ interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWeather(weatherDbM: WeatherDbM)
 
-    @Delete
-    suspend fun deleteWeather(weatherDbM: WeatherDbM)
+    @Query("DELETE FROM weather WHERE lat = :lat AND lon = :lon")
+    suspend fun deleteWeather(lat: Double, lon: Double)
 
     @Query("SELECT * FROM forecast")
     fun getForecast(): Flow<List<ForecastDbM>>

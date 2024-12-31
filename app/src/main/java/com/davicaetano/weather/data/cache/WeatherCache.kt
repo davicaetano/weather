@@ -60,6 +60,8 @@ class WeatherCache @Inject constructor(
     }
 
     suspend fun deleteLocation(location: Location) {
+        weatherDao.deleteWeather(location.lat, location.lon)
+        weatherDao.deleteForecast(location.lat, location.lon)
         weatherDao.deleteLocation(location.toLocationDbM())
     }
 }
