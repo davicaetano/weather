@@ -6,8 +6,8 @@ import java.math.BigDecimal
 
 data class WindNM (
 
-    @SerializedName("speed" ) var speed : BigDecimal,
-    @SerializedName("deg"   ) var deg   : BigDecimal,
-    @SerializedName("gust"  ) var gust  : BigDecimal?,
+    @SerializedName("speed" ) var speed : BigDecimal = BigDecimal.ZERO,
+    @SerializedName("deg"   ) var deg   : BigDecimal = BigDecimal.ZERO,
+    @SerializedName("gust"  ) var gust  : BigDecimal? = BigDecimal.ZERO,
 
 )

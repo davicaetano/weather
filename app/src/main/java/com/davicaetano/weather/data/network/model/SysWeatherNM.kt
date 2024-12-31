@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class SysWeatherNM (
 
     @SerializedName("country"    ) var country    : String? = null,
-    @SerializedName("sunrise"    ) var sunrise    : Int,
-    @SerializedName("sunset"     ) var sunset     : Int,
+    @SerializedName("sunrise"    ) var sunrise    : Int = 0,
+    @SerializedName("sunset"     ) var sunset     : Int = 0,
 
 )

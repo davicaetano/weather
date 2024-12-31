@@ -100,7 +100,7 @@ class WeatherRepository @Inject constructor(
                 unit = unitSystem.getString()
             )
             if (result.isSuccessful) {
-                val forecastList =                         result.body()!!.toForecastList(
+                val forecastList = result.body()!!.toForecastList(
                     coord.lat,
                     coord.lon,
                     unitSystem
@@ -118,7 +118,7 @@ class WeatherRepository @Inject constructor(
         }
     }
 
-    suspend fun fetchGeoLocation(
+    private suspend fun fetchGeoLocation(
         query: String,
     ) {
         _searchState.value = LoadingSearchState(query)
@@ -142,7 +142,7 @@ class WeatherRepository @Inject constructor(
         _searchState.value = InitialSearchState(search)
     }
 
-    suspend fun onSearchClick() {
+    suspend fun fetchSearch() {
         fetchGeoLocation(searchState.value.searchField.trim())
     }
 }

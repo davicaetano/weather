@@ -16,7 +16,7 @@ data class ForecastDataResult(
     @SerializedName("message") var message: Int? = null,
     @SerializedName("cnt") var cnt: Int? = null,
     @SerializedName("list") var listNM: ArrayList<ListNM> = arrayListOf(),
-    @SerializedName("city") var cityNM: CityNM,
+    @SerializedName("city") var cityNM: CityNM = CityNM(),
 
     ) {
     fun toForecastList(

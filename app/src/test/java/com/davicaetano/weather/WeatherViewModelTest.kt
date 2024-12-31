@@ -78,23 +78,18 @@ class WeatherViewModelTest {
 
             weatherViewModel.weatherViewState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessWeatherViewState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.forecastViewState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessForecastViewState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.searchState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessSearchState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.locationState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessLocationState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.favoriteState.test {
                 assertThat(awaitItem()).isNotEmpty()
-                cancelAndIgnoreRemainingEvents()
             }
         }
     }
@@ -118,23 +113,18 @@ class WeatherViewModelTest {
 
             weatherViewModel.weatherViewState.test {
                 assertThat(awaitItem()).isInstanceOf(ErrorWeatherViewState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.forecastViewState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessForecastViewState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.searchState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessSearchState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.locationState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessLocationState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.favoriteState.test {
                 assertThat(awaitItem()).isNotEmpty()
-                cancelAndIgnoreRemainingEvents()
             }
         }
     }
@@ -158,23 +148,18 @@ class WeatherViewModelTest {
 
             weatherViewModel.weatherViewState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessWeatherViewState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.forecastViewState.test {
                 assertThat(awaitItem()).isInstanceOf(ErrorForecastViewState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.searchState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessSearchState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.locationState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessLocationState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.favoriteState.test {
                 assertThat(awaitItem()).isNotEmpty()
-                cancelAndIgnoreRemainingEvents()
             }
         }
     }
@@ -208,23 +193,18 @@ class WeatherViewModelTest {
 
             weatherViewModel.weatherViewState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessWeatherViewState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.forecastViewState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessForecastViewState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.searchState.test {
                 assertThat(awaitItem()).isInstanceOf(ErrorSearchState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.locationState.test {
                 assertThat(awaitItem()).isInstanceOf(SuccessLocationState::class.java)
-                cancelAndIgnoreRemainingEvents()
             }
             weatherViewModel.favoriteState.test {
                 assertThat(awaitItem()).isNotEmpty()
-                cancelAndIgnoreRemainingEvents()
             }
         }
     }

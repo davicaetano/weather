@@ -108,7 +108,7 @@ class WeatherViewModel @Inject constructor(
 
     fun onSearchClick() {
         viewModelScope.launch {
-            weatherRepository.onSearchClick()
+            weatherRepository.fetchSearch()
         }.let { jobList.add(it) }
     }
 

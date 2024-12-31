@@ -6,6 +6,6 @@ import java.math.BigDecimal
 
 data class CloudsNM (
 
-    @SerializedName("all" ) var all : BigDecimal
+    @SerializedName("all" ) var all : BigDecimal = BigDecimal.ZERO
 
 )
