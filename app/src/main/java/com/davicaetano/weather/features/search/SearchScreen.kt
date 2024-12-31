@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -28,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davicaetano.weather.R
@@ -75,26 +78,25 @@ fun SearchScreen(
             .background(MaterialTheme.colorScheme.primary)
             .padding(16.dp)
     ) {
-        Row(
-            modifier = Modifier
-
-        ) {
-
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = searchState.searchField,
-                onValueChange = { onSearchFieldChange(it) },
-                trailingIcon = {
-                    Icon(
-                        modifier = Modifier
-                            .height(32.dp)
-                            .clickable { onSearchClick() },
-                        painter = painterResource(R.drawable.search_72dp),
-                        contentDescription = null
-                    )
-                }
-            )
-        }
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = searchState.searchField,
+            onValueChange = { onSearchFieldChange(it) },
+            trailingIcon = {
+                Icon(
+                    modifier = Modifier
+                        .height(32.dp)
+                        .clickable { onSearchClick() },
+                    painter = painterResource(R.drawable.search_72dp),
+                    contentDescription = null
+                )
+            },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(
+                onSearch = { onSearchClick() }
+            ),
+            maxLines = 1
+        )
         Spacer(modifier = Modifier.size(16.dp))
         when (searchState) {
             is InitialSearchState -> {}
