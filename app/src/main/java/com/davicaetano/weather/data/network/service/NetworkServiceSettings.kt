@@ -24,6 +24,6 @@ class NetworkServiceSettings @Inject constructor() {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val feedNetworkService: WeatherApiService =
+    val weatherApiService: WeatherApiService =
         retrofit.create(WeatherApiService::class.java)
 }

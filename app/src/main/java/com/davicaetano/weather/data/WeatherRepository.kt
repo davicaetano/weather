@@ -1,7 +1,6 @@
 package com.davicaetano.weather.data
 
 import com.davicaetano.weather.data.cache.WeatherCache
-import com.davicaetano.weather.data.network.service.NetworkServiceSettings
 import com.davicaetano.weather.data.network.service.WeatherApiService
 import com.davicaetano.weather.data.network.service.getString
 import com.davicaetano.weather.model.Coord
@@ -19,11 +18,9 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(
-    networkServiceSettings: NetworkServiceSettings,
+    private val weatherApiService: WeatherApiService,
     private val weatherCache: WeatherCache
 ) {
-
-    private val weatherApiService: WeatherApiService = networkServiceSettings.feedNetworkService
 
     private val _weatherState = MutableStateFlow<WeatherState>(InitialWeatherState())
     val weatherState = _weatherState.asStateFlow()
